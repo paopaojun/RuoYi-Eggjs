@@ -482,6 +482,34 @@ class UserService extends Service {
 
     return posts.map((p) => p.postName).join(",");
   }
+
+  /**
+   * 查询已分配用户角色列表
+   * @param {object} params - 查询参数
+   * @return {array} 用户列表
+   */
+  async selectAllocatedList(params) {
+    const { ctx } = this;
+    
+    return await ctx.service.db.mysql.ruoyi.sysUserMapper.selectAllocatedList(
+      ctx.helper.page(params),
+      params
+    );
+  }
+
+  /**
+   * 查询未分配用户角色列表
+   * @param {object} params - 查询参数
+   * @return {array} 用户列表
+   */
+  async selectUnallocatedList(params) {
+    const { ctx } = this;
+    
+    return await ctx.service.db.mysql.ruoyi.sysUserMapper.selectUnallocatedList(
+      ctx.helper.page(params),
+      params
+    );
+  }
 }
 
 module.exports = UserService;
