@@ -58,10 +58,12 @@ class UserService extends Service {
   async selectUserByUserName(userName) {
     const { ctx } = this;
 
-    return
+    const user =
       await ctx.service.db.mysql.ruoyi.sysUserMapper.selectUserByUserName([], {
         userName,
       });
+
+      return user;
   }
 
   /**

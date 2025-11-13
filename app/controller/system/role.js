@@ -7,6 +7,7 @@
 const Controller = require('egg').Controller;
 const { Route, HttpGet, HttpPost, HttpPut, HttpDelete } = require('egg-decorator-router');
 const { RequiresPermissions } = require('../../decorator/permission');
+const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
@@ -562,13 +563,33 @@ module.exports = app => {
         // 查询角色列表
         const list = await service.system.role.selectRoleList(params);
         
-        // TODO: 实现 Excel 导出功能
-        // 目前返回 JSON 数据
-        ctx.body = {
-          code: 200,
-          msg: '导出成功',
-          data: list
-        };
+        // 定义 Excel 列配置
+        const columns = [
+          { header: '角色编号', key: 'roleId', width: 12 },
+          { header: '角色名称', key: 'roleName', width: 20 },
+          { header: '权限字符', key: 'roleKey', width: 20 },
+          { header: '显示顺序', key: 'roleSort', width: 12 },
+          { header: '数据范围', key: 'dataScopeText', width: 15 },
+          { header: '角色状态', key: 'statusText', width: 10 },
+          { header: '创建时间', key: 'createTime', width: 20 },
+          { header: '备注', key: 'remark', width: 30 }
+        ];
+        
+        // 处理导出数据
+        const exportData = list.map(role => ({
+          ...role,
+          dataScopeText: ExcelUtil.convertDictValue(role.dataScope, {
+            '1': '全部数据权限',
+            '2': '自定数据权限',
+            '3': '本部门数据权限',
+            '4': '本部门及以下数据权限',
+            '5': '仅本人数据权限'
+          }),
+          statusText: ExcelUtil.convertDictValue(role.status, { '0': '正常', '1': '停用' })
+        }));
+        
+        // 导出 Excel
+        ExcelUtil.exportExcel(ctx, exportData, columns, '角色数据');
       } catch (err) {
         ctx.logger.error('导出角色失败:', err);
         ctx.body = {

@@ -25,15 +25,26 @@ class RoleService extends Service {
   async selectRolesByUserId(userId) {
     const { ctx } = this;
 
-    // 如果是管理员，返回所有角色
-    if (ctx.helper.isAdmin(userId)) {
-      return await this.selectRoleAll();
-    }
-
-    return await ctx.service.db.mysql.ruoyi.sysRoleMapper.selectRolePermissionByUserId(
+    // 查询用户拥有的角色权限
+    const userRoles = await ctx.service.db.mysql.ruoyi.sysRoleMapper.selectRolePermissionByUserId(
       [],
       { userId }
     );
+
+    // 查询所有角色
+    const roles = await this.selectRoleAll();
+
+    // 遍历所有角色，标记用户拥有的角色
+    for (const role of roles) {
+      for (const userRole of userRoles) {
+        if (role.roleId === userRole.roleId) {
+          role.flag = true;
+          break;
+        }
+      }
+    }
+
+    return roles;
   }
 
   /**
@@ -167,6 +178,8 @@ class RoleService extends Service {
 
     // 设置创建信息
     role.createBy = ctx.state.user.userName;
+    role.menuCheckStrictly = role.menuCheckStrictly === true ? 1 : 0;
+    role.deptCheckStrictly = role.deptCheckStrictly === true ? 1 : 0;
 
     // 插入角色
     const result = await ctx.service.db.mysql.ruoyi.sysRoleMapper.insertRole(
