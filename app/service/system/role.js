@@ -283,21 +283,19 @@ class RoleService extends Service {
     const { ctx } = this;
 
     // 删除角色与菜单关联
-    await ctx.service.db.mysql.ruoyi.sysRoleMenuMapper.deleteRoleMenu([
-      [],
-      { roleId: roleIds },
-    ]);
+    await ctx.service.db.mysql.ruoyi.sysRoleMenuMapper.deleteRoleMenu([], {
+      array: roleIds,
+    });
 
     // 删除角色与部门关联
-    await ctx.service.db.mysql.ruoyi.sysRoleDeptMapper.deleteRoleDept([
-      [],
-      { roleIds },
-    ]);
+    await ctx.service.db.mysql.ruoyi.sysRoleDeptMapper.deleteRoleDept([], {
+      array: roleIds,
+    });
 
     // 删除角色（软删除）
     const result =
       await ctx.service.db.mysql.ruoyi.sysRoleMapper.deleteRoleByIds([], {
-        roleIds,
+        array: roleIds,
       });
 
     return result && result.length > 0 ? roleIds.length : 0;
@@ -400,9 +398,9 @@ class RoleService extends Service {
       deptId,
     }));
 
-    await ctx.service.db.mysql.ruoyi.sysRoleDeptMapper.batchRoleDept([
-      roleDepts,
-    ]);
+    await ctx.service.db.mysql.ruoyi.sysRoleDeptMapper.batchRoleDept([], {
+      list: roleDepts,
+    });
   }
 }
 
