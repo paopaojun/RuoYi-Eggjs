@@ -7,6 +7,17 @@
 const Service = require('egg').Service;
 
 class DictTypeService extends Service {
+  async selectDictTypePage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).sysDictTypeMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectDictTypeListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
 
   /**
    * 查询字典类型列表

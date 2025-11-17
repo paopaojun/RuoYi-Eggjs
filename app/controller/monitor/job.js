@@ -44,34 +44,15 @@ module.exports = app => {
       const { ctx, service } = this;
       
       try {
-        const query = ctx.query;
-        
-        // 分页参数
-        const pageNum = parseInt(query.pageNum) || 1;
-        const pageSize = parseInt(query.pageSize) || 10;
-        
-        // 查询条件
-        const params = {
-          jobName: query.jobName,
-          jobGroup: query.jobGroup,
-          status: query.status,
-          invokeTarget: query.invokeTarget
-        };
+        const params = ctx.query;
         
         // 查询定时任务列表
-        const list = await service.monitor.job.selectJobList(
-          { pageNum, pageSize },
-          params
-        );
-        
-        // 查询总数
-        const total = await service.monitor.job.selectJobCount(params);
+        const result = await service.monitor.job.selectJobPage(params);
         
         ctx.body = {
           code: 200,
           msg: '查询成功',
-          rows: list,
-          total
+          ...result
         };
       } catch (err) {
         ctx.logger.error('查询定时任务列表失败:', err);

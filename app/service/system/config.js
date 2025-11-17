@@ -7,6 +7,17 @@
 const Service = require('egg').Service;
 
 class ConfigService extends Service {
+  async selectConfigPage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).sysConfigMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectConfigListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
 
   /**
    * 查询参数配置列表

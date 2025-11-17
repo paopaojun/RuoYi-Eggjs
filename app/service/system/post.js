@@ -7,6 +7,17 @@
 const Service = require('egg').Service;
 
 class PostService extends Service {
+  async selectPostPage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).sysPostMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectPostListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
 
   /**
    * 查询所有岗位

@@ -24,36 +24,15 @@ module.exports = app => {
       const { ctx, service } = this;
       
       try {
-        const query = ctx.query;
-        
-        // 分页参数
-        const pageNum = parseInt(query.pageNum) || 1;
-        const pageSize = parseInt(query.pageSize) || 10;
-        
-        // 查询条件
-        const params = {
-          jobName: query.jobName,
-          jobGroup: query.jobGroup,
-          status: query.status,
-          invokeTarget: query.invokeTarget,
-          beginTime: query.beginTime,
-          endTime: query.endTime
-        };
+        const params = ctx.query;
         
         // 查询调度日志列表
-        const list = await service.monitor.jobLog.selectJobLogList(
-          { pageNum, pageSize },
-          params
-        );
-        
-        // 查询总数
-        const total = await service.monitor.jobLog.selectJobLogCount(params);
+        const result = await service.monitor.jobLog.selectJobLogPage(params);
         
         ctx.body = {
           code: 200,
           msg: '查询成功',
-          rows: list,
-          total
+          ...result
         };
       } catch (err) {
         ctx.logger.error('查询调度日志列表失败:', err);

@@ -1,5 +1,5 @@
 /*
- * @Description: 用户服务�?
+ * @Description: 用户服务�?
  * @Author: AI Assistant
  * @Date: 2025-10-23
  */
@@ -7,6 +7,17 @@
 const Service = require("egg").Service;
 
 class UserService extends Service {
+  async selectUserPage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).sysUserMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectUserListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
   /**
    * 查询用户列表（分页）
    * @param {object} params - 查询参数
@@ -51,8 +62,8 @@ class UserService extends Service {
   }
 
   /**
-   * 根据用户名查询用�?
-   * @param {string} userName - 用户�?
+   * 根据用户名查询用�?
+   * @param {string} userName - 用户�?
    * @return {object} 用户信息
    */
   async selectUserByUserName(userName) {
@@ -118,13 +129,13 @@ class UserService extends Service {
   }
 
   /**
-   * 校验用户是否有数据权�?
+   * 校验用户是否有数据权�?
    * @param {number} userId - 用户ID
    */
   async checkUserDataScope(userId) {
     const { ctx } = this;
 
-    // 管理员拥有所有数据权�?
+    // 管理员拥有所有数据权�?
     if (ctx.helper.isAdmin(ctx.state.user.userId)) {
       return;
     }
@@ -152,12 +163,12 @@ class UserService extends Service {
     if (result) {
       const userId = result;
 
-      // 插入用户与岗位关�?
+      // 插入用户与岗位关�?
       if (user.postIds && user.postIds.length > 0) {
         await this.insertUserPost(userId, user.postIds);
       }
 
-      // 插入用户与角色关�?
+      // 插入用户与角色关�?
       if (user.roleIds && user.roleIds.length > 0) {
         await this.insertUserRole(userId, user.roleIds);
       }
@@ -179,24 +190,24 @@ class UserService extends Service {
     // 设置更新信息
     user.updateBy = ctx.state.user.userName;
 
-    // 删除用户与角色关�?
+    // 删除用户与角色关�?
     await ctx.helper.getMasterDB(ctx).sysUserRoleMapper.deleteUserRoleByUserId(
       [],
       { userId: user.userId }
     );
 
-    // 插入用户与角色关�?
+    // 插入用户与角色关�?
     if (user.roleIds && user.roleIds.length > 0) {
       await this.insertUserRole(user.userId, user.roleIds);
     }
 
-    // 删除用户与岗位关�?
+    // 删除用户与岗位关�?
     await ctx.helper.getMasterDB(ctx).sysUserPostMapper.deleteUserPostByUserId(
       [],
       { userId: user.userId }
     );
 
-    // 插入用户与岗位关�?
+    // 插入用户与岗位关�?
     if (user.postIds && user.postIds.length > 0) {
       await this.insertUserPost(user.userId, user.postIds);
     }
@@ -211,7 +222,7 @@ class UserService extends Service {
   }
 
   /**
-   * 修改用户状�?
+   * 修改用户状�?
    * @param {object} user - 用户对象
    * @return {number} 影响行数
    */
@@ -248,12 +259,12 @@ class UserService extends Service {
   async deleteUserByIds(userIds) {
     const { ctx } = this;
 
-    // 删除用户与角色关�?
+    // 删除用户与角色关�?
     await ctx.helper.getMasterDB(ctx).sysUserRoleMapper.deleteUserRole([], {
       array: userIds,
     });
 
-    // 删除用户与岗位关�?
+    // 删除用户与岗位关�?
     await ctx.helper.getMasterDB(ctx).sysUserPostMapper.deleteUserPost([], {
       array: userIds,
     });
@@ -275,18 +286,18 @@ class UserService extends Service {
   async insertUserAuth(userId, roleIds) {
     const { ctx } = this;
 
-    // 删除用户与角色关�?
+    // 删除用户与角色关�?
     await ctx.helper.getMasterDB(ctx).sysUserRoleMapper.deleteUserRoleByUserId(
       [],
       { userId }
     );
 
-    // 插入用户与角色关�?
+    // 插入用户与角色关�?
     await this.insertUserRole(userId, roleIds);
   }
 
   /**
-   * 插入用户与角色关�?
+   * 插入用户与角色关�?
    * @param {number} userId - 用户ID
    * @param {array} roleIds - 角色ID数组
    */
@@ -309,7 +320,7 @@ class UserService extends Service {
   }
 
   /**
-   * 插入用户与岗位关�?
+   * 插入用户与岗位关�?
    * @param {number} userId - 用户ID
    * @param {array} postIds - 岗位ID数组
    */
@@ -335,7 +346,7 @@ class UserService extends Service {
    * 导入用户数据
    * @param {array} userList - 用户列表
    * @param {boolean} updateSupport - 是否更新已存在的用户
-   * @param {string} operName - 操作�?
+   * @param {string} operName - 操作�?
    * @return {string} 导入结果信息
    */
   async importUser(userList, updateSupport = false, operName) {
@@ -351,7 +362,7 @@ class UserService extends Service {
 
     for (const user of userList) {
       try {
-        // 校验用户名是否存�?
+        // 校验用户名是否存�?
         const existUser = await this.selectUserByUserName(user.userName);
 
         if (!existUser) {
@@ -374,12 +385,12 @@ class UserService extends Service {
         }
       } catch (err) {
         failureNum++;
-        failureMsg.push(`用户 ${user.userName} 导入失败�?{err.message}`);
+        failureMsg.push(`用户 ${user.userName} 导入失败�?{err.message}`);
       }
     }
 
     if (failureNum > 0) {
-      return `导入成功 ${successNum} 条，失败 ${failureNum} 条�?{failureMsg.join(
+      return `导入成功 ${successNum} 条，失败 ${failureNum} 条�?{failureMsg.join(
         "; "
       )}`;
     }
@@ -450,9 +461,9 @@ class UserService extends Service {
   }
 
   /**
-   * 查询用户角色�?
-   * @param {string} userName - 用户�?
-   * @return {string} 角色�?
+   * 查询用户角色�?
+   * @param {string} userName - 用户�?
+   * @return {string} 角色�?
    */
   async selectUserRoleGroup(userName) {
     const { ctx } = this;
@@ -467,9 +478,9 @@ class UserService extends Service {
   }
 
   /**
-   * 查询用户岗位�?
-   * @param {string} userName - 用户�?
-   * @return {string} 岗位�?
+   * 查询用户岗位�?
+   * @param {string} userName - 用户�?
+   * @return {string} 岗位�?
    */
   async selectUserPostGroup(userName) {
     const { ctx } = this;
@@ -484,7 +495,7 @@ class UserService extends Service {
   }
 
   /**
-   * 查询已分配用户角色列�?
+   * 查询已分配用户角色列�?
    * @param {object} params - 查询参数
    * @return {array} 用户列表
    */
@@ -498,7 +509,7 @@ class UserService extends Service {
   }
 
   /**
-   * 查询未分配用户角色列�?
+   * 查询未分配用户角色列�?
    * @param {object} params - 查询参数
    * @return {array} 用户列表
    */

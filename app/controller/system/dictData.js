@@ -22,21 +22,18 @@ module.exports = app => {
     @HttpGet('/list')
     async list() {
       const { ctx, service } = this;
-      
+
       try {
         const params = ctx.query;
-        
-        // 分页参数
-        const pageNum = parseInt(params.pageNum) || 1;
-        const pageSize = parseInt(params.pageSize) || 10;
-        
-        // 查询字典数据列表
-        const list = await service.system.dictData.selectDictDataList(params);
-        
-        // 手动分页
-        const total = list.length;
-        const start = (pageNum - 1) * pageSize;
-        const rows = list.slice(start, start + pageSize);
+
+        // 查询列表
+        const result = await service.system.dictdata.selectDictDataPage(params);
+
+        ctx.body = {
+          code: 200,
+          msg: "查询成功",
+          ...result,
+        };
         
         ctx.body = {
           code: 200,

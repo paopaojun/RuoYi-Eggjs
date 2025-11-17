@@ -7,6 +7,17 @@
 const Service = require('egg').Service;
 
 class NoticeService extends Service {
+  async selectNoticePage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).sysNoticeMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectNoticeListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
 
   /**
    * 查询通知公告列表

@@ -8,6 +8,17 @@ const Service = require('egg').Service;
 const dayjs = require('dayjs');
 
 class OperlogService extends Service {
+  async selectOperLogPage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).sysOperLogMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectOperLogListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
 
   /**
    * 查询操作日志列表

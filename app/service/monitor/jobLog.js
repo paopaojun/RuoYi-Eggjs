@@ -7,6 +7,17 @@
 const Service = require('egg').Service;
 
 class JobLogService extends Service {
+  async selectJobLogPage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).sysJobLogMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectJobLogListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
 
   /**
    * 查询调度日志列表

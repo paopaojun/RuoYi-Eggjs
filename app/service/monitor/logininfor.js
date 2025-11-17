@@ -8,6 +8,17 @@ const Service = require('egg').Service;
 const dayjs = require('dayjs');
 
 class LogininforService extends Service {
+  async selectLogininforPage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).sysLogininforMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectLogininforListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
 
   /**
    * 查询登录日志列表

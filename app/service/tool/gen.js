@@ -13,6 +13,17 @@ const VelocityUtils = require('../../util/velocityUtils');
 const GenConstants = require('../../constant/genConstants');
 
 class GenService extends Service {
+  async selectGenTablePage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).genTableMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectGenTableListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
 
   /**
    * 查询代码生成表列表

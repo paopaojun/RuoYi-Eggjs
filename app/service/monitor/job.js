@@ -9,6 +9,17 @@ const CronUtils = require('../../util/cronUtils');
 const scheduleUtils = require('../../util/scheduleUtils');
 
 class JobService extends Service {
+  async selectJobPage(params = {}) {
+    const { ctx } = this;
+    const mapper = ctx.helper.getDB(ctx).sysJobMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectJobListMapper([], params),
+      params,
+      mapper.db()
+    );
+  }
+
 
   /**
    * 查询定时任务列表
