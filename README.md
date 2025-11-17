@@ -213,7 +213,8 @@
 - 📝 **文件模版** - 使用 VSCode 插件快速生成代码模板（[文档](https://marketplace.visualstudio.com/items?itemName=qiu8310.dot-template-vscode)）
 - 🎯 **路由注解** - 使用装饰器定义路由，简洁优雅（[文档](https://github.com/fyl080801/egg-decorator-router)）
 - 🔐 **JWT 认证** - 基于 JWT 的用户认证和权限控制
-- 🔒 **权限控制** ✨ NEW - 类似 Spring Boot `@PreAuthorize` 的权限装饰器，支持通配符、AND/OR 逻辑
+- 🔒 **权限控制** - 类似 Spring Boot `@PreAuthorize` 的权限装饰器，支持通配符、AND/OR 逻辑
+- 💡 **IDE 智能提示** ✨ NEW - 完整的 TypeScript 类型定义，支持代码跳转、智能提示和参数提示
 - 🚀 **缓存支持** - 多层级缓存策略（内存、文件、Redis）
 - 🛡️ **限流保护** - API 请求频率限制，防止恶意攻击
 - 📦 **文件上传** - 支持多种文件类型上传

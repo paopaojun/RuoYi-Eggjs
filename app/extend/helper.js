@@ -105,14 +105,17 @@ module.exports = {
 
   /**
    * 获取数据库访问对象（基于配置，自动读写分离）
-   * @param {object} ctx - 上下文对象
-   * @param {boolean} forWrite - 是否用于写操作，默认 false（读操作）
-   * @return {object} 数据库访问对象（包含所有 Mapper）
+   * @param {import('egg').Context} ctx - 上下文对象
+   * @param {boolean} [forWrite=false] - 是否用于写操作，默认 false（读操作）
+   * @returns {import('egg').IService['db']['mysql']['ruoyi']} 数据库访问对象（包含所有 Mapper）
    * @example
-   * // 读操作（从库）
-   * const mapper = ctx.helper.getDB(ctx).sysRoleMapper;
-   * // 写操作（主库）
-   * const mapper = ctx.helper.getDB(ctx, true).sysRoleMapper;
+   * // 读操作（从库）- 支持 IDE 自动跳转
+   * const db = ctx.helper.getDB(ctx);
+   * const users = await db.sysUserMapper.selectUserList([0, 10], {});
+   * 
+   * // 写操作（主库）- 支持 IDE 自动跳转
+   * const db = ctx.helper.getDB(ctx, true);
+   * await db.sysUserMapper.insertUser([userData]);
    */
   getDB(ctx, forWrite = false) {
     const { master, slave, readWriteSplit } = ctx.app.config.database;
@@ -121,20 +124,22 @@ module.exports = {
     if (readWriteSplit && !forWrite) {
       // 读操作使用从库
       const { driver, instance } = slave;
-      return ctx.service.db[driver][instance];
+      return /** @type {import('egg').IService['db']['mysql']['ruoyi']} */ (ctx.service.db[driver][instance]);
     }
     
     // 写操作或未启用读写分离，使用主库
     const { driver, instance } = master;
-    return ctx.service.db[driver][instance];
+    return /** @type {import('egg').IService['db']['mysql']['ruoyi']} */ (ctx.service.db[driver][instance]);
   },
 
   /**
    * 获取主库数据库访问对象（写操作）
-   * @param {object} ctx - 上下文对象
-   * @return {object} 主库数据库访问对象
+   * @param {import('egg').Context} ctx - 上下文对象
+   * @returns {import('egg').IService['db']['mysql']['ruoyi']} 主库数据库访问对象
    * @example
-   * const mapper = ctx.helper.getMasterDB(ctx).sysRoleMapper;
+   * // 支持 IDE 自动跳转到 Mapper 方法
+   * const db = ctx.helper.getMasterDB(ctx);
+   * await db.sysUserMapper.updateUser([userData]);
    */
   getMasterDB(ctx) {
     return this.getDB(ctx, true);
@@ -142,10 +147,12 @@ module.exports = {
 
   /**
    * 获取从库数据库访问对象（读操作）
-   * @param {object} ctx - 上下文对象
-   * @return {object} 从库数据库访问对象
+   * @param {import('egg').Context} ctx - 上下文对象
+   * @returns {import('egg').IService['db']['mysql']['ruoyi']} 从库数据库访问对象
    * @example
-   * const mapper = ctx.helper.getSlaveDB(ctx).sysRoleMapper;
+   * // 支持 IDE 自动跳转到 Mapper 方法
+   * const db = ctx.helper.getSlaveDB(ctx);
+   * const list = await db.sysRoleMapper.selectRoleList([0, 10], {});
    */
   getSlaveDB(ctx) {
     return this.getDB(ctx, false);
