@@ -54,7 +54,7 @@ class LogininforService extends Service {
     const { ctx } = this;
     
     // 删除登录日志
-    const result = await ctx.helper.getMasterDB(ctx).sysLogininforMapper.deleteLogininforByIds([], {infoIds});
+    const result = await ctx.helper.getMasterDB(ctx).sysLogininforMapper.deleteLogininforByIds([], {array:infoIds});
     
     return result;
   }

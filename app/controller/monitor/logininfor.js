@@ -7,6 +7,8 @@
 const Controller = require('egg').Controller;
 const { Route, HttpGet, HttpPost, HttpDelete } = require('egg-decorator-router');
 const { RequiresPermissions } = require('../../decorator/permission');
+const { Log, BusinessType } = require('../../decorator/log');
+const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
@@ -136,6 +138,7 @@ module.exports = app => {
      * POST /api/monitor/logininfor/export
      * 权限：monitor:logininfor:export
      */
+    @Log({ title: '登录日志', businessType: BusinessType.EXPORT })
     @RequiresPermissions('monitor:logininfor:export')
     @HttpPost('/export')
     async export() {
@@ -147,13 +150,30 @@ module.exports = app => {
         // 查询登录日志列表
         const list = await service.monitor.logininfor.selectLogininforList(params);
         
-        // TODO: 实现 Excel 导出功能
-        // 目前返回 JSON 数据
-        ctx.body = {
-          code: 200,
-          msg: '导出成功',
-          data: list
-        };
+        // 定义 Excel 列配置
+        const columns = [
+          { header: '访问编号', key: 'infoId', width: 12 },
+          { header: '用户名称', key: 'userName', width: 15 },
+          { header: '登录地址', key: 'ipaddr', width: 15 },
+          { header: '登录地点', key: 'loginLocation', width: 20 },
+          { header: '浏览器', key: 'browser', width: 20 },
+          { header: '操作系统', key: 'os', width: 15 },
+          { header: '登录状态', key: 'statusText', width: 12 },
+          { header: '操作信息', key: 'msg', width: 30 },
+          { header: '登录时间', key: 'loginTime', width: 20 },
+        ];
+        
+        // 处理导出数据
+        const exportData = list.map(log => ({
+          ...log,
+          statusText: ExcelUtil.convertDictValue(log.status, {
+            '0': '成功',
+            '1': '失败',
+          }),
+        }));
+        
+        // 导出 Excel
+        ExcelUtil.exportExcel(ctx, exportData, columns, '登录日志');
       } catch (err) {
         ctx.logger.error('导出登录日志失败:', err);
         ctx.body = {
@@ -166,4 +186,3 @@ module.exports = app => {
 
   return LogininforController;
 };
-

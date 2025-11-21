@@ -33,11 +33,14 @@ module.exports = (appInfo) => {
   };
 
   config.accessControl = {
-    match: /^\/api[\/]?((?!version|login|register|captchaImage).)*$/i,
+    // 精确匹配：排除 /api/version、/api/login、/api/register、/api/captchaImage
+    // 其他 /api/* 路径都需要 JWT 验证
+    match: /^\/api\/(?!(?:version|login|register|captchaImage)(?:\/|$))/i,
   };
 
   config.jwt = {
     enable: true,
+    ignore: null,
     match: config.accessControl.match,
     secret: "z2Em*CpGBZDw+",
     expiresIn: "7d",
