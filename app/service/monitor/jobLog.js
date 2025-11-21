@@ -121,7 +121,7 @@ class JobLogService extends Service {
       }
       
       // 插入日志
-      const result = await mapper.insertJobLog([jobLog]);
+      const result = await mapper.insertJobLog([],jobLog);
       
       return result.affectedRows;
     } catch (err) {
