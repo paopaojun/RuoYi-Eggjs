@@ -48,9 +48,7 @@ class DictDataService extends Service {
   async selectDictDataById(dictCode) {
     const { ctx } = this;
     
-    const dictDataList = await ctx.helper.getDB(ctx).sysDictDataMapper.selectDictDataById([], {dictCode});
-    
-    return dictDataList && dictDataList.length > 0 ? dictDataList[0] : null;
+    return await ctx.helper.getDB(ctx).sysDictDataMapper.selectDictDataById([], {dictCode});
   }
 
   /**

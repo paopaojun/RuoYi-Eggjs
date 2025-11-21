@@ -7,6 +7,7 @@
 const Controller = require('egg').Controller;
 const { Route, HttpGet, HttpPost, HttpPut, HttpDelete } = require('egg-decorator-router');
 const { RequiresPermissions } = require('../../decorator/permission');
+const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
@@ -27,7 +28,7 @@ module.exports = app => {
         const params = ctx.query;
 
         // 查询列表
-        const result = await service.system.dicttype.selectDictTypePage(params);
+        const result = await service.system.dictType.selectDictTypePage(params);
 
         ctx.body = {
           code: 200,
@@ -255,25 +256,39 @@ module.exports = app => {
     @HttpPost('/export')
     async export() {
       const { ctx, service } = this;
-      
+
       try {
         const params = ctx.request.body;
-        
+
         // 查询字典类型列表
         const list = await service.system.dictType.selectDictTypeList(params);
-        
-        // TODO: 实现 Excel 导出功能
-        // 目前返回 JSON 数据
-        ctx.body = {
-          code: 200,
-          msg: '导出成功',
-          data: list
-        };
+
+        // 定义 Excel 列配置
+        const columns = [
+          { header: '字典编号', key: 'dictId', width: 12 },
+          { header: '字典名称', key: 'dictName', width: 20 },
+          { header: '字典类型', key: 'dictType', width: 20 },
+          { header: '字典状态', key: 'statusText', width: 10 },
+          { header: '创建时间', key: 'createTime', width: 20 },
+          { header: '备注', key: 'remark', width: 30 },
+        ];
+
+        // 处理导出数据
+        const exportData = list.map((dict) => ({
+          ...dict,
+          statusText: ExcelUtil.convertDictValue(dict.status, {
+            0: '正常',
+            1: '停用',
+          }),
+        }));
+
+        // 导出 Excel
+        ExcelUtil.exportExcel(ctx, exportData, columns, '字典类型数据');
       } catch (err) {
         ctx.logger.error('导出字典类型失败:', err);
         ctx.body = {
           code: 500,
-          msg: err.message || '导出字典类型失败'
+          msg: err.message || '导出字典类型失败',
         };
       }
     }

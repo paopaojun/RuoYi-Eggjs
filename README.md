@@ -79,23 +79,23 @@
 + `/api/system/post/export` - 导出岗位 ✅（已完成）
 
 #### 字典类型管理模块
-+ `/api/system/dict/type/list` - 字典类型列表（分页）
-+ `/api/system/dict/type/:dictId` - 字典类型详情
-+ `/api/system/dict/type` (POST) - 新增字典类型
-+ `/api/system/dict/type` (PUT) - 修改字典类型
-+ `/api/system/dict/type/:dictIds` (DELETE) - 删除字典类型
-+ `/api/system/dict/type/refreshCache` (DELETE) - 刷新字典缓存
-+ `/api/system/dict/type/optionselect` - 字典选择框列表
-+ `/api/system/dict/type/export` - 导出字典类型
++ `/api/system/dict/type/list` - 字典类型列表（分页） ✅（已完成）
++ `/api/system/dict/type/:dictId` - 字典类型详情 ✅（已完成）
++ `/api/system/dict/type` (POST) - 新增字典类型 ✅（已完成）
++ `/api/system/dict/type` (PUT) - 修改字典类型 ✅（已完成）
++ `/api/system/dict/type/:dictIds` (DELETE) - 删除字典类型 ✅（已完成）
++ `/api/system/dict/type/refreshCache` (DELETE) - 刷新字典缓存 ✅（已完成）
++ `/api/system/dict/type/optionselect` - 字典选择框列表 ✅（已完成）
++ `/api/system/dict/type/export` - 导出字典类型 ✅（已完成）
 
 #### 字典数据管理模块
-+ `/api/system/dict/data/list` - 字典数据列表（分页）
-+ `/api/system/dict/data/:dictCode` - 字典数据详情
-+ `/api/system/dict/data/type/:dictType` - 根据类型查询
-+ `/api/system/dict/data` (POST) - 新增字典数据
-+ `/api/system/dict/data` (PUT) - 修改字典数据
-+ `/api/system/dict/data/:dictCodes` (DELETE) - 删除字典数据
-+ `/api/system/dict/data/export` - 导出字典数据
++ `/api/system/dict/data/list` - 字典数据列表（分页） ✅（已完成）
++ `/api/system/dict/data/:dictCode` - 字典数据详情 ✅（已完成）
++ `/api/system/dict/data/type/:dictType` - 根据类型查询 ✅（已完成）
++ `/api/system/dict/data` (POST) - 新增字典数据 ✅（已完成）
++ `/api/system/dict/data` (PUT) - 修改字典数据 ✅（已完成）
++ `/api/system/dict/data/:dictCodes` (DELETE) - 删除字典数据 ✅（已完成）
++ `/api/system/dict/data/export` - 导出字典数据 ✅（已完成）
 
 #### 参数配置管理模块
 + `/api/system/config/list` - 参数配置列表（分页）

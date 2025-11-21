@@ -64,9 +64,7 @@ class DictTypeService extends Service {
   async selectDictTypeById(dictId) {
     const { ctx } = this;
     
-    const dictTypes = await ctx.helper.getDB(ctx).sysDictTypeMapper.selectDictTypeById([], {dictId});
-    
-    return dictTypes && dictTypes.length > 0 ? dictTypes[0] : null;
+    return await ctx.helper.getDB(ctx).sysDictTypeMapper.selectDictTypeById([], {dictId});
   }
 
   /**
