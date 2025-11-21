@@ -4,7 +4,7 @@
  * @Date: 2025-10-24
  */
 
-const Service = require('egg').Service;
+const Service = require("egg").Service;
 
 class PostService extends Service {
   async selectPostPage(params = {}) {
@@ -18,16 +18,15 @@ class PostService extends Service {
     );
   }
 
-
   /**
    * 查询所有岗位
    * @return {array} 岗位列表
    */
   async selectPostAll() {
     const { ctx } = this;
-    
+
     const posts = await ctx.helper.getDB(ctx).sysPostMapper.selectPostAll();
-    
+
     return posts || [];
   }
 
@@ -38,10 +37,12 @@ class PostService extends Service {
    */
   async selectPostListByUserId(userId) {
     const { ctx } = this;
-    
-    const posts = await ctx.helper.getDB(ctx).sysPostMapper.selectPostListByUserId([], {userId});
-    
-    return posts.map(p => p.postId);
+
+    const posts = await ctx.helper
+      .getDB(ctx)
+      .sysPostMapper.selectPostListByUserId([], { userId });
+
+    return posts.map((p) => p.postId);
   }
 
   /**
@@ -51,17 +52,19 @@ class PostService extends Service {
    */
   async selectPostList(post = {}) {
     const { ctx } = this;
-    
+
     // 查询条件
     const conditions = {
       postCode: post.postCode,
       postName: post.postName,
-      status: post.status
+      status: post.status,
     };
 
     // 查询列表
-    const posts = await ctx.helper.getDB(ctx).sysPostMapper.selectPostList([], conditions);
-    
+    const posts = await ctx.helper
+      .getDB(ctx)
+      .sysPostMapper.selectPostList([], conditions);
+
     return posts || [];
   }
 
@@ -72,10 +75,10 @@ class PostService extends Service {
    */
   async selectPostById(postId) {
     const { ctx } = this;
-    
-    const posts = await ctx.helper.getDB(ctx).sysPostMapper.selectPostById([], {postId});
-    
-    return posts && posts.length > 0 ? posts[0] : null;
+
+    return await ctx.helper
+      .getDB(ctx)
+      .sysPostMapper.selectPostById([], { postId });
   }
 
   /**
@@ -85,14 +88,16 @@ class PostService extends Service {
    */
   async checkPostNameUnique(post) {
     const { ctx } = this;
-    
+
     const postId = post.postId || -1;
-    const posts = await ctx.helper.getDB(ctx).sysPostMapper.checkPostNameUnique([], {postName: post.postName});
-    
+    const posts = await ctx.helper
+      .getDB(ctx)
+      .sysPostMapper.checkPostNameUnique([], { postName: post.postName });
+
     if (posts && posts.length > 0 && posts[0].postId !== postId) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -103,14 +108,16 @@ class PostService extends Service {
    */
   async checkPostCodeUnique(post) {
     const { ctx } = this;
-    
+
     const postId = post.postId || -1;
-    const posts = await ctx.helper.getDB(ctx).sysPostMapper.checkPostCodeUnique([], {postCode: post.postCode});
-    
+    const posts = await ctx.helper
+      .getDB(ctx)
+      .sysPostMapper.checkPostCodeUnique([], { postCode: post.postCode });
+
     if (posts && posts.length > 0 && posts[0].postId !== postId) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -121,13 +128,15 @@ class PostService extends Service {
    */
   async insertPost(post) {
     const { ctx } = this;
-    
+
     // 设置创建信息
     post.createBy = ctx.state.user.userName;
-    
+
     // 插入岗位
-    const result = await ctx.helper.getMasterDB(ctx).sysPostMapper.insertPost([], post);
-    
+    const result = await ctx.helper
+      .getMasterDB(ctx)
+      .sysPostMapper.insertPost([], post);
+
     return result;
   }
 
@@ -138,13 +147,15 @@ class PostService extends Service {
    */
   async updatePost(post) {
     const { ctx } = this;
-    
+
     // 设置更新信息
     post.updateBy = ctx.state.user.userName;
-    
+
     // 更新岗位
-    const result = await ctx.helper.getMasterDB(ctx).sysPostMapper.updatePost([], post);
-    
+    const result = await ctx.helper
+      .getMasterDB(ctx)
+      .sysPostMapper.updatePost([], post);
+
     return result;
   }
 
@@ -155,14 +166,14 @@ class PostService extends Service {
    */
   async deletePostByIds(postIds) {
     const { ctx } = this;
-    
+
     // 删除岗位
-    const result = await ctx.helper.getMasterDB(ctx).sysPostMapper.deletePostByIds([], {postIds});
-    
+    const result = await ctx.helper
+      .getMasterDB(ctx)
+      .sysPostMapper.deletePostByIds([], { array: postIds });
+
     return result;
   }
 }
 
 module.exports = PostService;
-
-

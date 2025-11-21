@@ -7,6 +7,7 @@
 const Controller = require('egg').Controller;
 const { Route, HttpGet, HttpPost, HttpPut, HttpDelete } = require('egg-decorator-router');
 const { RequiresPermissions } = require('../../decorator/permission');
+const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
@@ -220,25 +221,40 @@ module.exports = app => {
     @HttpPost('/export')
     async export() {
       const { ctx, service } = this;
-      
+
       try {
         const params = ctx.request.body;
-        
+
         // 查询岗位列表
         const list = await service.system.post.selectPostList(params);
-        
-        // TODO: 实现 Excel 导出功能
-        // 目前返回 JSON 数据
-        ctx.body = {
-          code: 200,
-          msg: '导出成功',
-          data: list
-        };
+
+        // 定义 Excel 列配置
+        const columns = [
+          { header: '岗位编号', key: 'postId', width: 12 },
+          { header: '岗位编码', key: 'postCode', width: 15 },
+          { header: '岗位名称', key: 'postName', width: 20 },
+          { header: '显示顺序', key: 'postSort', width: 12 },
+          { header: '岗位状态', key: 'statusText', width: 10 },
+          { header: '创建时间', key: 'createTime', width: 20 },
+          { header: '备注', key: 'remark', width: 30 },
+        ];
+
+        // 处理导出数据
+        const exportData = list.map((post) => ({
+          ...post,
+          statusText: ExcelUtil.convertDictValue(post.status, {
+            0: '正常',
+            1: '停用',
+          }),
+        }));
+
+        // 导出 Excel
+        ExcelUtil.exportExcel(ctx, exportData, columns, '岗位数据');
       } catch (err) {
         ctx.logger.error('导出岗位失败:', err);
         ctx.body = {
           code: 500,
-          msg: err.message || '导出岗位失败'
+          msg: err.message || '导出岗位失败',
         };
       }
     }
@@ -246,4 +262,3 @@ module.exports = app => {
 
   return PostController;
 };
-

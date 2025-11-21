@@ -71,12 +71,12 @@
 + `/api/system/dept/roleDeptTreeselect/:roleId` - 角色部门树 ✅（已完成）
 
 #### 岗位管理模块
-+ `/api/system/post/list` - 岗位列表（分页）
-+ `/api/system/post/:postId` - 岗位详情
-+ `/api/system/post` (POST) - 新增岗位
-+ `/api/system/post` (PUT) - 修改岗位
-+ `/api/system/post/:postIds` (DELETE) - 删除岗位
-+ `/api/system/post/export` - 导出岗位
++ `/api/system/post/list` - 岗位列表（分页） ✅（已完成）
++ `/api/system/post/:postId` - 岗位详情 ✅（已完成）
++ `/api/system/post` (POST) - 新增岗位 ✅（已完成）
++ `/api/system/post` (PUT) - 修改岗位 ✅（已完成）
++ `/api/system/post/:postIds` (DELETE) - 删除岗位 ✅（已完成）
++ `/api/system/post/export` - 导出岗位 ✅（已完成）
 
 #### 字典类型管理模块
 + `/api/system/dict/type/list` - 字典类型列表（分页）
