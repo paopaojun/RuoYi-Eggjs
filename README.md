@@ -119,8 +119,8 @@
 ### 系统监控模块
 
 #### 在线用户监控
-+ `/api/monitor/online/list` - 在线用户列表
-+ `/api/monitor/online/:tokenId` (DELETE) - 强退用户
++ `/api/monitor/online/list` - 在线用户列表 ✅（已完成）
++ `/api/monitor/online/:tokenId` (DELETE) - 强退用户 ✅（已完成）
 
 #### 登录日志监控
 + `/api/monitor/logininfor/list` - 登录日志列表（分页） ✅（已完成）

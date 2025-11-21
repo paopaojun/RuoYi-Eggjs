@@ -109,3 +109,23 @@ module.exports.DataScope = {
   SELF: '5'              // 仅本人数据权限
 };
 
+/**
+ * 缓存常量
+ */
+module.exports.CacheConstants = {
+  // 登录用户 Token 缓存键前缀
+  LOGIN_TOKEN_KEY: 'login_tokens:',
+  
+  // 在线用户缓存键前缀
+  ONLINE_USER_KEY: 'online_user:',
+  
+  // 验证码缓存键前缀
+  CAPTCHA_CODE_KEY: 'captcha:',
+  
+  // 用户权限缓存键前缀
+  USER_PERMISSIONS_KEY: 'user:permissions:',
+  
+  // 用户角色缓存键前缀
+  USER_ROLES_KEY: 'user:roles:'
+};
+

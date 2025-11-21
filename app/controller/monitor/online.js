@@ -7,6 +7,7 @@
 const Controller = require('egg').Controller;
 const { Route, HttpGet, HttpDelete } = require('egg-decorator-router');
 const { RequiresPermissions } = require('../../decorator/permission');
+const { Log, BusinessType } = require('../../decorator/log');
 
 module.exports = app => {
 
@@ -58,6 +59,7 @@ module.exports = app => {
      * DELETE /api/monitor/online/:tokenId
      * 权限：monitor:online:forceLogout
      */
+    @Log({ title: '在线用户', businessType: BusinessType.FORCE })
     @RequiresPermissions('monitor:online:forceLogout')
     @HttpDelete('/:tokenId')
     async forceLogout() {

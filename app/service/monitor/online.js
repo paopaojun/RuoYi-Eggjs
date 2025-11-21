@@ -5,6 +5,7 @@
  */
 
 const Service = require('egg').Service;
+const { CacheConstants } = require('../../constant');
 
 class OnlineService extends Service {
 
@@ -50,20 +51,31 @@ class OnlineService extends Service {
 
   /**
    * 强退用户
-   * @param {string} tokenId - Token ID
+   * @param {string} tokenId - Token ID (从 URL 参数中获取，已经是纯 token，不包含前缀)
    * @return {boolean} 是否成功
    */
   async forceLogout(tokenId) {
     const { app } = this;
     
-    // 将 Token 加入黑名单（标记为已撤销）
-    await app.cache.default.set(tokenId, 'revoked', { ttl: 7 * 24 * 60 * 60 });
+    // 参照 Spring Boot 版本：
+    // redisCache.deleteObject(CacheConstants.LOGIN_TOKEN_KEY + tokenId);
+    
+    // 删除登录 Token 缓存（这是主要逻辑）
+    const loginTokenKey = CacheConstants.LOGIN_TOKEN_KEY + tokenId;
+    await app.cache.default.del(loginTokenKey);
+    
+    // 将 Token 加入黑名单，防止 Token 再次使用
+    // 对应 JWT 配置中的 isRevoked 检查
+    const jwtPayload = app.jwt.decode(tokenId);
+    if (jwtPayload && jwtPayload.jti) {
+      await app.cache.default.set(jwtPayload.jti, 'revoked', { ttl: 7 * 24 * 60 * 60 });
+    }
     
     // 删除在线用户信息
-    // 通过 tokenId 反查 userId（从所有在线用户中查找）
-    const keys = await app.cache.default.keys('online_user:*');
+    // 通过 tokenId 反查 userId
+    const onlineKeys = await app.cache.default.keys(CacheConstants.ONLINE_USER_KEY + '*');
     
-    for (const key of keys) {
+    for (const key of onlineKeys) {
       const onlineUser = await app.cache.default.get(key);
       
       if (onlineUser && onlineUser.tokenId === tokenId) {

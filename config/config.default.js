@@ -55,7 +55,14 @@ module.exports = (appInfo) => {
       return ctx.request.body.token || ctx.query.token;
     },
     isRevoked: async (ctx, payload) => {
-      return "revoked" == (await ctx.app.cache.default.get(payload.jti));
+      const isRevoked = "revoked" == (await ctx.app.cache.default.get(payload.jti));
+      if (isRevoked) {
+        // 如果是 logout 请求，允许通过（用于清理操作）
+        if (ctx.originalUrl && ctx.originalUrl.endsWith('/logout')) {
+          return false;
+        }
+      }
+      return isRevoked;
     },
   };
 
@@ -117,10 +124,11 @@ module.exports = (appInfo) => {
   config.onerror = {
     all(err, ctx) {
       if ("UnauthorizedError" == err.name) {
-        ctx.body = JSON.stringify({
-          code: 500,
+        ctx.status = 200;
+        ctx.body = {
+          code: 401,
           msg: "UnauthorizedError",
-        });
+        };
       }
     },
   };
