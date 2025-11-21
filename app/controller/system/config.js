@@ -7,6 +7,7 @@
 const Controller = require('egg').Controller;
 const { Route, HttpGet, HttpPost, HttpPut, HttpDelete } = require('egg-decorator-router');
 const { RequiresPermissions } = require('../../decorator/permission');
+const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
@@ -255,25 +256,40 @@ module.exports = app => {
     @HttpPost('/export')
     async export() {
       const { ctx, service } = this;
-      
+
       try {
         const params = ctx.request.body;
-        
+
         // 查询参数配置列表
         const list = await service.system.config.selectConfigList(params);
-        
-        // TODO: 实现 Excel 导出功能
-        // 目前返回 JSON 数据
-        ctx.body = {
-          code: 200,
-          msg: '导出成功',
-          data: list
-        };
+
+        // 定义 Excel 列配置
+        const columns = [
+          { header: '参数编号', key: 'configId', width: 12 },
+          { header: '参数名称', key: 'configName', width: 25 },
+          { header: '参数键名', key: 'configKey', width: 30 },
+          { header: '参数键值', key: 'configValue', width: 20 },
+          { header: '系统内置', key: 'configTypeText', width: 10 },
+          { header: '创建时间', key: 'createTime', width: 20 },
+          { header: '备注', key: 'remark', width: 30 },
+        ];
+
+        // 处理导出数据
+        const exportData = list.map((config) => ({
+          ...config,
+          configTypeText: ExcelUtil.convertDictValue(config.configType, {
+            Y: '是',
+            N: '否',
+          }),
+        }));
+
+        // 导出 Excel
+        ExcelUtil.exportExcel(ctx, exportData, columns, '参数配置数据');
       } catch (err) {
         ctx.logger.error('导出参数配置失败:', err);
         ctx.body = {
           code: 500,
-          msg: err.message || '导出参数配置失败'
+          msg: err.message || '导出参数配置失败',
         };
       }
     }
@@ -281,4 +297,3 @@ module.exports = app => {
 
   return ConfigController;
 };
-

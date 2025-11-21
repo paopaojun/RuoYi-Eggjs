@@ -52,9 +52,7 @@ class ConfigService extends Service {
   async selectConfigById(configId) {
     const { ctx } = this;
     
-    const configs = await ctx.helper.getDB(ctx).sysConfigMapper.selectConfigById([], {configId});
-    
-    return configs && configs.length > 0 ? configs[0] : null;
+    return await ctx.helper.getDB(ctx).sysConfigMapper.selectConfigById([], {configId});
   }
 
   /**

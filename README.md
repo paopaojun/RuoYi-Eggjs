@@ -98,14 +98,14 @@
 + `/api/system/dict/data/export` - 导出字典数据 ✅（已完成）
 
 #### 参数配置管理模块
-+ `/api/system/config/list` - 参数配置列表（分页）
-+ `/api/system/config/:configId` - 参数配置详情
-+ `/api/system/config/configKey/:configKey` - 根据键名查询
-+ `/api/system/config` (POST) - 新增参数配置
-+ `/api/system/config` (PUT) - 修改参数配置
-+ `/api/system/config/:configIds` (DELETE) - 删除参数配置
-+ `/api/system/config/refreshCache` (DELETE) - 刷新参数缓存
-+ `/api/system/config/export` - 导出参数配置
++ `/api/system/config/list` - 参数配置列表（分页） ✅（已完成）
++ `/api/system/config/:configId` - 参数配置详情 ✅（已完成）
++ `/api/system/config/configKey/:configKey` - 根据键名查询 ✅（已完成）
++ `/api/system/config` (POST) - 新增参数配置 ✅（已完成）
++ `/api/system/config` (PUT) - 修改参数配置 ✅（已完成）
++ `/api/system/config/:configIds` (DELETE) - 删除参数配置 ✅（已完成）
++ `/api/system/config/refreshCache` (DELETE) - 刷新参数缓存 ✅（已完成）
++ `/api/system/config/export` - 导出参数配置 ✅（已完成）
 
 #### 通知公告管理模块
 + `/api/system/notice/list` - 通知公告列表（分页）
