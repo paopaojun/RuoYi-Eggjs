@@ -36,20 +36,20 @@
 + `/api/system/user/importTemplate` - 导入模板 ✅（已完成）
 
 #### 角色管理模块
-+ `/api/system/role/list` - 角色列表（分页）
-+ `/api/system/role/:roleId` - 角色详情
-+ `/api/system/role` (POST) - 新增角色
-+ `/api/system/role` (PUT) - 修改角色
-+ `/api/system/role/:roleIds` (DELETE) - 删除角色
-+ `/api/system/role/changeStatus` - 修改状态
-+ `/api/system/role/dataScope` - 数据权限
-+ `/api/system/role/allocatedList` - 已授权用户列表
-+ `/api/system/role/unallocatedList` - 未授权用户列表
-+ `/api/system/role/authUser/cancel` - 取消授权
-+ `/api/system/role/authUser/cancelAll` - 批量取消授权
-+ `/api/system/role/authUser/selectAll` - 批量授权
-+ `/api/system/role/deptTree/:roleId` - 角色部门树
-+ `/api/system/role/export` - 导出角色
++ `/api/system/role/list` - 角色列表（分页） ✅（已完成）
++ `/api/system/role/:roleId` - 角色详情 ✅（已完成）
++ `/api/system/role` (POST) - 新增角色 ✅（已完成）
++ `/api/system/role` (PUT) - 修改角色 ✅（已完成）
++ `/api/system/role/:roleIds` (DELETE) - 删除角色 ✅（已完成）
++ `/api/system/role/changeStatus` - 修改状态 ✅（已完成）
++ `/api/system/role/dataScope` - 数据权限 ✅（已完成）
++ `/api/system/role/allocatedList` - 已授权用户列表 ✅（已完成）
++ `/api/system/role/unallocatedList` - 未授权用户列表 ✅（已完成）
++ `/api/system/role/authUser/cancel` - 取消授权 ✅（已完成）
++ `/api/system/role/authUser/cancelAll` - 批量取消授权 ✅（已完成）
++ `/api/system/role/authUser/selectAll` - 批量授权 ✅（已完成）
++ `/api/system/role/deptTree/:roleId` - 角色部门树 ✅（已完成）
++ `/api/system/role/export` - 导出角色 ✅（已完成）
 
 #### 菜单管理模块
 + `/api/system/menu/list` - 菜单列表（树形）

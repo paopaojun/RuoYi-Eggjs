@@ -487,14 +487,18 @@ class UserService extends Service {
   /**
    * 查询已分配用户角色列表
    * @param {object} params - 查询参数
-   * @return {array} 用户列表
+   * @return {object} 分页结果
    */
   async selectAllocatedList(params) {
     const { ctx } = this;
 
-    return await ctx.helper
-      .getDB(ctx)
-      .sysUserMapper.selectAllocatedList(ctx.helper.page(params), params);
+    const mapper = ctx.helper.getDB(ctx).sysUserMapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.selectAllocatedListMapper([], params),
+      params,
+      mapper.db()
+    );
   }
 
   /**

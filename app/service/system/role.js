@@ -362,7 +362,7 @@ class RoleService extends Service {
 
     await ctx.helper.getMasterDB(ctx).sysUserRoleMapper.batchUserRole(
       [],
-      userRoles
+    {list: userRoles}
     );
 
     return userIds.length;

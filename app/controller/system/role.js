@@ -320,7 +320,11 @@ module.exports = (app) => {
         // 查询已分配用户角色列表
         const result = await service.system.user.selectAllocatedList(params);
 
-        ctx.body = result;
+        ctx.body = {
+          code: 200,
+          msg: "查询成功",
+          ...result,
+        };
       } catch (err) {
         ctx.logger.error("查询已分配用户列表失败:", err);
         ctx.body = {
@@ -400,7 +404,7 @@ module.exports = (app) => {
       const { ctx, service } = this;
 
       try {
-        const { roleId, userIds } = ctx.request.body;
+        const { roleId, userIds } = ctx.query;
 
         // 解析用户ID数组
         const userIdArray =
@@ -438,7 +442,7 @@ module.exports = (app) => {
       const { ctx, service } = this;
 
       try {
-        const { roleId, userIds } = ctx.request.body;
+        const { roleId, userIds } = ctx.query;
 
         // 校验数据权限
         await service.system.role.checkRoleDataScope(roleId);
@@ -483,9 +487,11 @@ module.exports = (app) => {
         const result = { code: 200, msg: "操作成功" };
 
         // 查询角色已分配的部门ID列表
-        result.checkedKeys = await service.system.dept.selectDeptListByRoleId(
-          parseInt(roleId)
-        ) || [];
+        const checkedKeys =
+          (await service.system.dept.selectDeptListByRoleId(
+            parseInt(roleId)
+          )) || [];
+        result.checkedKeys = checkedKeys.map((item) => item.deptId);
 
         // 查询所有部门树
         result.depts = await service.system.dept.selectDeptTreeList({});
