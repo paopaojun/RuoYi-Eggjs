@@ -155,9 +155,7 @@ class DeptService extends Service {
   async selectDeptById(deptId) {
     const { ctx } = this;
     
-    const depts = await ctx.helper.getDB(ctx).sysDeptMapper.selectDeptById([], {deptId});
-    
-    return depts && depts.length > 0 ? depts[0] : null;
+    return await ctx.helper.getDB(ctx).sysDeptMapper.selectDeptById([], {deptId});
   }
 
   /**
@@ -212,7 +210,7 @@ class DeptService extends Service {
     
     const result = await ctx.helper.getDB(ctx).sysDeptMapper.hasChildByDeptId([], {deptId});
     
-    return result && result.length > 0 && result[0].count > 0;
+    return result && result["count(1)"] > 0;
   }
 
   /**
@@ -225,7 +223,7 @@ class DeptService extends Service {
     
     const result = await ctx.helper.getDB(ctx).sysDeptMapper.checkDeptExistUser([], {deptId});
     
-    return result && result.length > 0 && result[0].count > 0;
+    return result && result["count(1)"] > 0;
   }
 
   /**

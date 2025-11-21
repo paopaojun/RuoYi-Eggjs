@@ -61,14 +61,14 @@
 + `/api/system/menu/roleMenuTreeselect/:roleId` - 角色菜单树 ✅（已完成）
 
 #### 部门管理模块
-+ `/api/system/dept/list` - 部门列表（树形）
-+ `/api/system/dept/:deptId` - 部门详情
-+ `/api/system/dept` (POST) - 新增部门
-+ `/api/system/dept` (PUT) - 修改部门
-+ `/api/system/dept/:deptId` (DELETE) - 删除部门
-+ `/api/system/dept/list/exclude/:deptId` - 排除节点查询
-+ `/api/system/dept/treeselect` - 部门树选择
-+ `/api/system/dept/roleDeptTreeselect/:roleId` - 角色部门树
++ `/api/system/dept/list` - 部门列表（树形） ✅（已完成）
++ `/api/system/dept/:deptId` - 部门详情 ✅（已完成）
++ `/api/system/dept` (POST) - 新增部门 ✅（已完成）
++ `/api/system/dept` (PUT) - 修改部门 ✅（已完成）
++ `/api/system/dept/:deptId` (DELETE) - 删除部门 ✅（已完成）
++ `/api/system/dept/list/exclude/:deptId` - 排除节点查询 ✅（已完成）
++ `/api/system/dept/treeselect` - 部门树选择 ✅（已完成）
++ `/api/system/dept/roleDeptTreeselect/:roleId` - 角色部门树 ✅（已完成）
 
 #### 岗位管理模块
 + `/api/system/post/list` - 岗位列表（分页）
