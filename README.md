@@ -108,11 +108,11 @@
 + `/api/system/config/export` - 导出参数配置 ✅（已完成）
 
 #### 通知公告管理模块
-+ `/api/system/notice/list` - 通知公告列表（分页）
-+ `/api/system/notice/:noticeId` - 通知公告详情
-+ `/api/system/notice` (POST) - 新增通知公告
-+ `/api/system/notice` (PUT) - 修改通知公告
-+ `/api/system/notice/:noticeIds` (DELETE) - 删除通知公告
++ `/api/system/notice/list` - 通知公告列表（分页） ✅（已完成）
++ `/api/system/notice/:noticeId` - 通知公告详情 ✅（已完成）
++ `/api/system/notice` (POST) - 新增通知公告 ✅（已完成）
++ `/api/system/notice` (PUT) - 修改通知公告 ✅（已完成）
++ `/api/system/notice/:noticeIds` (DELETE) - 删除通知公告 ✅（已完成）
 
 ---
 
