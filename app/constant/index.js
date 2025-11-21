@@ -85,7 +85,8 @@ module.exports.BusinessType = {
   EXPORT: 5,     // 导出
   IMPORT: 6,     // 导入
   FORCE: 7,      // 强退
-  CLEAN: 8       // 清空数据
+  GENCODE: 8,    // 生成代码
+  CLEAN: 9       // 清空数据
 };
 
 /**

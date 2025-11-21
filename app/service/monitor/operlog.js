@@ -4,8 +4,8 @@
  * @Date: 2025-10-24
  */
 
-const Service = require('egg').Service;
-const dayjs = require('dayjs');
+const Service = require("egg").Service;
+const dayjs = require("dayjs");
 
 class OperlogService extends Service {
   async selectOperLogPage(params = {}) {
@@ -19,7 +19,6 @@ class OperlogService extends Service {
     );
   }
 
-
   /**
    * 查询操作日志列表
    * @param {object} operLog - 查询参数
@@ -27,7 +26,7 @@ class OperlogService extends Service {
    */
   async selectOperLogList(operLog = {}) {
     const { ctx } = this;
-    
+
     // 查询条件
     const conditions = {
       operIp: operLog.operIp,
@@ -38,13 +37,15 @@ class OperlogService extends Service {
       operName: operLog.operName,
       params: {
         beginTime: operLog.beginTime,
-        endTime: operLog.endTime
-      }
+        endTime: operLog.endTime,
+      },
     };
 
     // 查询列表
-    const operLogList = await ctx.helper.getDB(ctx).sysOperLogMapper.selectOperLogList([], conditions);
-    
+    const operLogList = await ctx.helper
+      .getDB(ctx)
+      .sysOperLogMapper.selectOperLogList([], conditions);
+
     return operLogList || [];
   }
 
@@ -55,9 +56,11 @@ class OperlogService extends Service {
    */
   async selectOperLogById(operId) {
     const { ctx } = this;
-    
-    const operLogList = await ctx.helper.getDB(ctx).sysOperLogMapper.selectOperLogById([], {operId});
-    
+
+    const operLogList = await ctx.helper
+      .getDB(ctx)
+      .sysOperLogMapper.selectOperLogById([], { operId });
+
     return operLogList && operLogList.length > 0 ? operLogList[0] : null;
   }
 
@@ -68,10 +71,12 @@ class OperlogService extends Service {
    */
   async deleteOperLogByIds(operIds) {
     const { ctx } = this;
-    
+
     // 删除操作日志
-    const result = await ctx.helper.getMasterDB(ctx).sysOperLogMapper.deleteOperLogByIds([], {operIds});
-    
+    const result = await ctx.helper
+      .getMasterDB(ctx)
+      .sysOperLogMapper.deleteOperLogByIds([], { array: operIds });
+
     return result;
   }
 
@@ -80,7 +85,7 @@ class OperlogService extends Service {
    */
   async cleanOperLog() {
     const { ctx } = this;
-    
+
     // 清空操作日志
     await ctx.helper.getDB(ctx).sysOperLogMapper.cleanOperLog();
   }
@@ -91,35 +96,34 @@ class OperlogService extends Service {
    */
   async recordOperLog(operLog) {
     const { ctx } = this;
-    
+
     try {
       const log = {
-        title: operLog.title || '',
+        title: operLog.title || "",
         businessType: operLog.businessType || 0,
-        method: operLog.method || '',
+        method: operLog.method || "",
         requestMethod: operLog.requestMethod || ctx.method,
         operatorType: operLog.operatorType || 0,
-        operName: operLog.operName || (ctx.state.user ? ctx.state.user.userName : ''),
-        deptName: operLog.deptName || '',
+        operName:
+          operLog.operName || (ctx.state.user ? ctx.state.user.userName : ""),
+        deptName: operLog.deptName || "",
         operUrl: operLog.operUrl || ctx.url,
         operIp: operLog.operIp || ctx.helper.getClientIP(ctx),
-        operLocation: operLog.operLocation || '',
+        operLocation: operLog.operLocation || "",
         operParam: operLog.operParam || JSON.stringify(ctx.request.body),
-        jsonResult: operLog.jsonResult || '',
-        status: operLog.status || '0',
-        errorMsg: operLog.errorMsg || '',
+        jsonResult: operLog.jsonResult || "",
+        status: operLog.status || "0",
+        errorMsg: operLog.errorMsg || "",
         costTime: operLog.costTime || 0,
-        operTime: dayjs().format('YYYY-MM-DD HH:mm:ss')
+        operTime: dayjs().format("YYYY-MM-DD HH:mm:ss"),
       };
-      
+
       // 异步写入数据库
       await ctx.helper.getMasterDB(ctx).sysOperLogMapper.insertOperlog([], log);
     } catch (err) {
-      ctx.logger.error('记录操作日志失败:', err);
+      ctx.logger.error("记录操作日志失败:", err);
     }
   }
 }
 
 module.exports = OperlogService;
-
-

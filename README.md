@@ -130,10 +130,10 @@
 + `/api/monitor/logininfor/export` - 导出登录日志
 
 #### 操作日志监控
-+ `/api/monitor/operlog/list` - 操作日志列表（分页）
-+ `/api/monitor/operlog/:operIds` (DELETE) - 删除操作日志
-+ `/api/monitor/operlog/clean` (DELETE) - 清空操作日志
-+ `/api/monitor/operlog/export` - 导出操作日志
++ `/api/monitor/operlog/list` - 操作日志列表（分页） ✅（已完成）
++ `/api/monitor/operlog/:operIds` (DELETE) - 删除操作日志 ✅（已完成）
++ `/api/monitor/operlog/clean` (DELETE) - 清空操作日志 ✅（已完成）
++ `/api/monitor/operlog/export` - 导出操作日志 ✅（已完成）
 
 #### 服务监控
 + `/api/monitor/server` - 获取服务器信息
