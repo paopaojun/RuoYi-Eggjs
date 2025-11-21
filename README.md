@@ -52,13 +52,13 @@
 + `/api/system/role/export` - 导出角色 ✅（已完成）
 
 #### 菜单管理模块
-+ `/api/system/menu/list` - 菜单列表（树形）
-+ `/api/system/menu/:menuId` - 菜单详情
-+ `/api/system/menu` (POST) - 新增菜单
-+ `/api/system/menu` (PUT) - 修改菜单
-+ `/api/system/menu/:menuId` (DELETE) - 删除菜单
-+ `/api/system/menu/treeselect` - 菜单树选择
-+ `/api/system/menu/roleMenuTreeselect/:roleId` - 角色菜单树
++ `/api/system/menu/list` - 菜单列表（树形） ✅（已完成）
++ `/api/system/menu/:menuId` - 菜单详情 ✅（已完成）
++ `/api/system/menu` (POST) - 新增菜单 ✅（已完成）
++ `/api/system/menu` (PUT) - 修改菜单 ✅（已完成）
++ `/api/system/menu/:menuId` (DELETE) - 删除菜单 ✅（已完成）
++ `/api/system/menu/treeselect` - 菜单树选择 ✅（已完成）
++ `/api/system/menu/roleMenuTreeselect/:roleId` - 角色菜单树 ✅（已完成）
 
 #### 部门管理模块
 + `/api/system/dept/list` - 部门列表（树形）

@@ -64,11 +64,9 @@ class MenuService extends Service {
   async selectMenuById(menuId) {
     const { ctx } = this;
 
-    const menus = await ctx.helper
+    return await ctx.helper
       .getDB(ctx)
       .sysMenuMapper.selectMenuById([], { menuId });
-
-    return menus && menus.length > 0 ? menus[0] : null;
   }
 
   /**
@@ -347,7 +345,7 @@ class MenuService extends Service {
       .getDB(ctx)
       .sysMenuMapper.hasChildByMenuId([], { menuId });
 
-    return result && result.length > 0 && result[0].count > 0;
+    return result && result["count(1)"] > 0;
   }
 
   /**
@@ -433,7 +431,7 @@ class MenuService extends Service {
       .sysMenuMapper.selectMenuPermsByRoleId([roleId]);
 
     const permsSet = [];
-    
+
     // 处理每个权限字符串，按逗号分割
     for (const perm of permsList) {
       if (perm && perm.trim()) {
