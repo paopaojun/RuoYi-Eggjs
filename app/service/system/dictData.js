@@ -99,7 +99,7 @@ class DictDataService extends Service {
     const result = await ctx.helper.getMasterDB(ctx).sysDictDataMapper.insertDictData([], dictData);
     
     // 更新缓存
-    if (result && result.length > 0) {
+    if (result > 0) {
       await this.updateDictCache(dictData.dictType);
       return 1;
     }
@@ -122,7 +122,7 @@ class DictDataService extends Service {
     const result = await ctx.helper.getMasterDB(ctx).sysDictDataMapper.updateDictData([], dictData);
     
     // 更新缓存
-    if (result && result.length > 0) {
+    if (result > 0) {
       await this.updateDictCache(dictData.dictType);
       return 1;
     }

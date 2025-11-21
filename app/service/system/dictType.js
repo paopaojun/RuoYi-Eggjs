@@ -115,7 +115,7 @@ class DictTypeService extends Service {
     const result = await ctx.helper.getMasterDB(ctx).sysDictTypeMapper.insertDictType([], dictType);
     
     // 清空缓存
-    if (result && result.length > 0) {
+    if (result > 0) {
       await this.clearDictCache();
       return 1;
     }
@@ -146,7 +146,7 @@ class DictTypeService extends Service {
     }
     
     // 清空缓存
-    if (result && result.length > 0) {
+    if (result > 0) {
       await this.clearDictCache();
       return 1;
     }

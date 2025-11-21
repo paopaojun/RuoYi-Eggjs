@@ -125,7 +125,7 @@ class ConfigService extends Service {
     const result = await ctx.helper.getMasterDB(ctx).sysConfigMapper.insertConfig([], config);
     
     // 更新缓存
-    if (result && result.length > 0) {
+    if (result > 0) {
       const cacheKey = `config:${config.configKey}`;
       await app.cache.default.set(cacheKey, config.configValue, 0);
       return 1;
@@ -152,7 +152,7 @@ class ConfigService extends Service {
     const result = await ctx.helper.getMasterDB(ctx).sysConfigMapper.updateConfig([], config);
     
     // 更新缓存
-    if (result && result.length > 0) {
+    if (result > 0) {
       // 如果键名改变，删除旧的缓存
       if (oldConfig && oldConfig.configKey !== config.configKey) {
         const oldCacheKey = `config:${oldConfig.configKey}`;

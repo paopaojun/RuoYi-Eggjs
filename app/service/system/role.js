@@ -196,12 +196,10 @@ class RoleService extends Service {
       role
     );
 
-    if (result && result.length > 0) {
-      const roleId = result[0].roleId;
-
+    if (result > 0) {
       // 插入角色与菜单关联
       if (role.menuIds && role.menuIds.length > 0) {
-        await this.insertRoleMenu(roleId, role.menuIds);
+        await this.insertRoleMenu(result, role.menuIds);
       }
 
       return 1;
