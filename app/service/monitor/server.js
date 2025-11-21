@@ -1,13 +1,13 @@
 /*
  * @Description: 服务监控服务层
- * @Author: AI Assistant
- * @Date: 2025-10-24
+ * @Author: 姜彦汐
+ * @Date: 2025-11-21
  */
 
 const Service = require('egg').Service;
 const os = require('os');
-const fs = require('fs');
-const path = require('path');
+const { execSync } = require('child_process');
+const dayjs = require('dayjs');
 
 class ServerService extends Service {
 
@@ -16,26 +16,26 @@ class ServerService extends Service {
    * @return {object} 服务器信息
    */
   async getServerInfo() {
-    const cpu = this.getCpuInfo();
+    const cpu = await this.getCpuInfo();
     const mem = this.getMemInfo();
     const sys = this.getSysInfo();
-    const node = this.getNodeInfo();
-    const disk = await this.getDiskInfo();
+    const jvm = this.getJvmInfo();
+    const sysFiles = await this.getSysFiles();
     
     return {
       cpu,
       mem,
       sys,
-      node,
-      disk
+      jvm,
+      sysFiles
     };
   }
 
   /**
-   * 获取 CPU 信息
+   * 获取 CPU 信息（异步等待 1 秒计算使用率）
    * @return {object} CPU 信息
    */
-  getCpuInfo() {
+  async getCpuInfo() {
     const cpus = os.cpus();
     
     if (!cpus || cpus.length === 0) {
@@ -49,7 +49,41 @@ class ServerService extends Service {
       };
     }
     
-    // 计算 CPU 使用率
+    // 第一次采样
+    const prevTicks = this.getCpuTicks();
+    
+    // 等待 1 秒
+    await this.sleep(1000);
+    
+    // 第二次采样
+    const ticks = this.getCpuTicks();
+    
+    // 计算差值
+    const user = ticks.user - prevTicks.user;
+    const nice = ticks.nice - prevTicks.nice;
+    const sys = ticks.sys - prevTicks.sys;
+    const idle = ticks.idle - prevTicks.idle;
+    const irq = ticks.irq - prevTicks.irq;
+    const iowait = 0; // Node.js 不提供 iowait
+    
+    const total = user + nice + sys + idle + irq + iowait;
+    
+    return {
+      cpuNum: cpus.length,
+      total: this.round((total / total) * 100, 2),
+      sys: this.round((sys / total) * 100, 2),
+      used: this.round((user / total) * 100, 2),
+      wait: this.round((iowait / total) * 100, 2),
+      free: this.round((idle / total) * 100, 2)
+    };
+  }
+
+  /**
+   * 获取 CPU 时间片总和
+   * @return {object} CPU 时间片
+   */
+  getCpuTicks() {
+    const cpus = os.cpus();
     let user = 0;
     let nice = 0;
     let sys = 0;
@@ -64,18 +98,7 @@ class ServerService extends Service {
       irq += cpu.times.irq;
     });
     
-    const total = user + nice + sys + idle + irq;
-    const used = user + nice + sys + irq;
-    const free = idle;
-    
-    return {
-      cpuNum: cpus.length,
-      total: 100,
-      sys: ((sys / total) * 100).toFixed(2),
-      used: ((used / total) * 100).toFixed(2),
-      wait: 0,
-      free: ((free / total) * 100).toFixed(2)
-    };
+    return { user, nice, sys, idle, irq };
   }
 
   /**
@@ -83,15 +106,15 @@ class ServerService extends Service {
    * @return {object} 内存信息
    */
   getMemInfo() {
-    const totalMem = os.totalmem();
-    const freeMem = os.freemem();
-    const usedMem = totalMem - freeMem;
+    const total = os.totalmem();
+    const free = os.freemem();
+    const used = total - free;
     
     return {
-      total: (totalMem / 1024 / 1024 / 1024).toFixed(2),  // GB
-      used: (usedMem / 1024 / 1024 / 1024).toFixed(2),    // GB
-      free: (freeMem / 1024 / 1024 / 1024).toFixed(2),    // GB
-      usage: ((usedMem / totalMem) * 100).toFixed(2)      // 使用率
+      total: this.round(total / (1024 * 1024 * 1024), 2),
+      used: this.round(used / (1024 * 1024 * 1024), 2),
+      free: this.round(free / (1024 * 1024 * 1024), 2),
+      usage: this.round((used / total) * 100, 2)
     };
   }
 
@@ -102,33 +125,40 @@ class ServerService extends Service {
   getSysInfo() {
     return {
       computerName: os.hostname(),
-      computerIp: this.getLocalIP(),
-      osName: os.type(),
+      computerIp: this.getHostIp(),
+      osName: this.getOsName(),
       osArch: os.arch(),
       userDir: process.cwd()
     };
   }
 
   /**
-   * 获取 Node.js 进程信息
-   * @return {object} Node.js 进程信息
+   * 获取 JVM（Node.js 运行时）信息
+   * @return {object} JVM 信息
    */
-  getNodeInfo() {
+  getJvmInfo() {
     const memUsage = process.memoryUsage();
     const uptime = process.uptime();
+    const startTime = Date.now() - uptime * 1000;
+    
+    // Node.js 中 heapTotal 相当于 JVM 的 total，rss 相当于 max
+    const total = memUsage.heapTotal;
+    const max = memUsage.rss;
+    const used = memUsage.heapUsed;
+    const free = total - used;
     
     return {
+      total: this.round(total / (1024 * 1024), 2),
+      max: this.round(max / (1024 * 1024), 2),
+      used: this.round(used / (1024 * 1024), 2),
+      free: this.round(free / (1024 * 1024), 2),
+      usage: this.round((used / total) * 100, 2),
+      name: 'Node.js',
       version: process.version,
       home: process.execPath,
-      total: (memUsage.heapTotal / 1024 / 1024).toFixed(2),  // MB
-      max: (memUsage.heapTotal / 1024 / 1024).toFixed(2),    // MB
-      used: (memUsage.heapUsed / 1024 / 1024).toFixed(2),    // MB
-      free: ((memUsage.heapTotal - memUsage.heapUsed) / 1024 / 1024).toFixed(2),  // MB
-      usage: ((memUsage.heapUsed / memUsage.heapTotal) * 100).toFixed(2),  // 使用率
-      name: 'Node.js',
-      startTime: new Date(Date.now() - uptime * 1000).toISOString(),
-      runTime: this.formatUptime(uptime),
-      inputArgs: process.execArgv.join(' ')
+      startTime: dayjs(startTime).format('YYYY-MM-DD HH:mm:ss'),
+      runTime: this.getRunTime(uptime),
+      inputArgs: process.execArgv.join(' ') || '-'
     };
   }
 
@@ -136,55 +166,159 @@ class ServerService extends Service {
    * 获取磁盘信息
    * @return {array} 磁盘信息列表
    */
-  async getDiskInfo() {
-    const disks = [];
+  async getSysFiles() {
+    const sysFiles = [];
     
     try {
-      // Windows 系统
-      if (os.platform() === 'win32') {
-        const drives = ['C:', 'D:', 'E:', 'F:'];
-        
-        for (const drive of drives) {
-          try {
-            const stats = fs.statSync(drive + '\\');
-            // Windows 下获取磁盘空间比较复杂，这里简化处理
-            disks.push({
-              dirName: drive,
-              sysTypeName: 'NTFS',
-              typeName: drive,
-              total: '-',
-              free: '-',
-              used: '-',
-              usage: '-'
-            });
-          } catch (err) {
-            // 驱动器不存在，跳过
-          }
-        }
+      const platform = os.platform();
+      
+      if (platform === 'win32') {
+        // Windows 系统
+        sysFiles.push(...this.getWindowsDiskInfo());
+      } else if (platform === 'darwin') {
+        // macOS 系统
+        sysFiles.push(...this.getMacDiskInfo());
       } else {
-        // Linux/Mac 系统
-        disks.push({
-          dirName: '/',
-          sysTypeName: 'ext4',
-          typeName: '/',
-          total: '-',
-          free: '-',
-          used: '-',
-          usage: '-'
-        });
+        // Linux 系统
+        sysFiles.push(...this.getLinuxDiskInfo());
       }
     } catch (err) {
-      // 获取磁盘信息失败
+      this.ctx.logger.error('获取磁盘信息失败：', err);
     }
     
-    return disks;
+    return sysFiles;
   }
 
   /**
-   * 获取本地 IP 地址
+   * 获取 Windows 磁盘信息
+   * @return {array} 磁盘信息列表
+   */
+  getWindowsDiskInfo() {
+    const sysFiles = [];
+    
+    try {
+      // 使用 wmic 命令获取磁盘信息
+      const output = execSync('wmic logicaldisk get caption,filesystem,size,freespace', { encoding: 'utf8' });
+      const lines = output.trim().split('\n').slice(1); // 跳过标题行
+      
+      lines.forEach(line => {
+        const parts = line.trim().split(/\s+/);
+        if (parts.length >= 4) {
+          const caption = parts[0];
+          const filesystem = parts[1];
+          const size = parseInt(parts[2] || 0);
+          const freespace = parseInt(parts[3] || 0);
+          
+          if (size > 0) {
+            const used = size - freespace;
+            sysFiles.push({
+              dirName: caption,
+              sysTypeName: filesystem,
+              typeName: caption,
+              total: this.convertFileSize(size),
+              free: this.convertFileSize(freespace),
+              used: this.convertFileSize(used),
+              usage: this.round((used / size) * 100, 2)
+            });
+          }
+        }
+      });
+    } catch (err) {
+      this.ctx.logger.error('获取 Windows 磁盘信息失败：', err);
+    }
+    
+    return sysFiles;
+  }
+
+  /**
+   * 获取 macOS 磁盘信息
+   * @return {array} 磁盘信息列表
+   */
+  getMacDiskInfo() {
+    const sysFiles = [];
+    
+    try {
+      // 使用 df 命令获取磁盘信息
+      const output = execSync('df -k', { encoding: 'utf8' });
+      const lines = output.trim().split('\n').slice(1); // 跳过标题行
+      
+      lines.forEach(line => {
+        const parts = line.trim().split(/\s+/);
+        if (parts.length >= 9) {
+          const filesystem = parts[0];
+          const total = parseInt(parts[1]) * 1024; // 转换为字节
+          const used = parseInt(parts[2]) * 1024;
+          const free = parseInt(parts[3]) * 1024;
+          const mount = parts[8];
+          
+          // 只显示物理磁盘和主要挂载点
+          if (filesystem.startsWith('/dev/') && (mount === '/' || mount.startsWith('/Volumes/'))) {
+            sysFiles.push({
+              dirName: mount,
+              sysTypeName: 'apfs',
+              typeName: filesystem,
+              total: this.convertFileSize(total),
+              free: this.convertFileSize(free),
+              used: this.convertFileSize(used),
+              usage: this.round((used / total) * 100, 2)
+            });
+          }
+        }
+      });
+    } catch (err) {
+      this.ctx.logger.error('获取 macOS 磁盘信息失败：', err);
+    }
+    
+    return sysFiles;
+  }
+
+  /**
+   * 获取 Linux 磁盘信息
+   * @return {array} 磁盘信息列表
+   */
+  getLinuxDiskInfo() {
+    const sysFiles = [];
+    
+    try {
+      // 使用 df 命令获取磁盘信息
+      const output = execSync('df -k', { encoding: 'utf8' });
+      const lines = output.trim().split('\n').slice(1); // 跳过标题行
+      
+      lines.forEach(line => {
+        const parts = line.trim().split(/\s+/);
+        if (parts.length >= 6) {
+          const filesystem = parts[0];
+          const total = parseInt(parts[1]) * 1024; // 转换为字节
+          const used = parseInt(parts[2]) * 1024;
+          const free = parseInt(parts[3]) * 1024;
+          const mount = parts[5];
+          
+          // 只显示物理磁盘
+          if (filesystem.startsWith('/dev/') && !filesystem.includes('loop')) {
+            sysFiles.push({
+              dirName: mount,
+              sysTypeName: 'ext4',
+              typeName: filesystem,
+              total: this.convertFileSize(total),
+              free: this.convertFileSize(free),
+              used: this.convertFileSize(used),
+              usage: this.round((used / total) * 100, 2)
+            });
+          }
+        }
+      });
+    } catch (err) {
+      this.ctx.logger.error('获取 Linux 磁盘信息失败：', err);
+    }
+    
+    return sysFiles;
+  }
+
+  /**
+   * 获取本机 IP 地址
    * @return {string} IP 地址
    */
-  getLocalIP() {
+  getHostIp() {
     const interfaces = os.networkInterfaces();
     
     for (const name of Object.keys(interfaces)) {
@@ -200,17 +334,79 @@ class ServerService extends Service {
   }
 
   /**
-   * 格式化运行时间
+   * 获取操作系统名称
+   * @return {string} 操作系统名称
+   */
+  getOsName() {
+    const platform = os.platform();
+    const release = os.release();
+    
+    switch (platform) {
+      case 'darwin':
+        return `macOS ${release}`;
+      case 'win32':
+        return `Windows ${release}`;
+      case 'linux':
+        return `Linux ${release}`;
+      default:
+        return `${platform} ${release}`;
+    }
+  }
+
+  /**
+   * 获取运行时间
    * @param {number} uptime - 运行时间（秒）
    * @return {string} 格式化后的时间
    */
-  formatUptime(uptime) {
+  getRunTime(uptime) {
     const days = Math.floor(uptime / 86400);
     const hours = Math.floor((uptime % 86400) / 3600);
     const minutes = Math.floor((uptime % 3600) / 60);
-    const seconds = Math.floor(uptime % 60);
     
-    return `${days}天${hours}小时${minutes}分钟${seconds}秒`;
+    return `${days}天${hours}小时${minutes}分钟`;
+  }
+
+  /**
+   * 字节转换
+   * @param {number} size - 字节大小
+   * @return {string} 转换后值
+   */
+  convertFileSize(size) {
+    const kb = 1024;
+    const mb = kb * 1024;
+    const gb = mb * 1024;
+    
+    if (size >= gb) {
+      return `${this.round(size / gb, 1)} GB`;
+    } else if (size >= mb) {
+      const value = size / mb;
+      return value > 100 ? `${this.round(value, 0)} MB` : `${this.round(value, 1)} MB`;
+    } else if (size >= kb) {
+      const value = size / kb;
+      return value > 100 ? `${this.round(value, 0)} KB` : `${this.round(value, 1)} KB`;
+    } else {
+      return `${size} B`;
+    }
+  }
+
+  /**
+   * 四舍五入保留小数
+   * @param {number} value - 数值
+   * @param {number} scale - 小数位数
+   * @return {number} 四舍五入后的值
+   */
+  round(value, scale) {
+    const multiplier = Math.pow(10, scale);
+    return Math.round(value * multiplier) / multiplier;
+  }
+
+  /**
+   * 延迟函数
+   * @param {number} ms - 延迟毫秒数
+   * @return {Promise} Promise 对象
+   */
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 

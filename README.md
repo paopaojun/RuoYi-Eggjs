@@ -136,7 +136,7 @@
 + `/api/monitor/operlog/export` - 导出操作日志 ✅（已完成）
 
 #### 服务监控
-+ `/api/monitor/server` - 获取服务器信息
++ `/api/monitor/server` - 获取服务器信息 ✅（已完成）
 
 #### 缓存监控
 + `/api/monitor/cache` - 缓存信息
