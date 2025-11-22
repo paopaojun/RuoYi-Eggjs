@@ -152,7 +152,7 @@ module.exports = app => {
       const { ctx, service } = this;
       
       try {
-        const { tables } = ctx.request.body;
+        const { tables } = ctx.query;
         
         // 解析表名数组
         const tableNames = typeof tables === 'string' ? tables.split(',') : tables;
