@@ -21,28 +21,18 @@ class JobService extends Service {
   }
 
   /**
-   * 查询定时任务列表
-   * @param {object} page - 分页参数 {pageNum, pageSize}
-   * @param {object} job - 查询条件
+   * 查询定时任务列表（不分页，用于导出）
+   * @param {object} params - 查询参数
    * @return {array} 定时任务列表
    */
-  async selectJobList(page, job = {}) {
+  async selectJobList(params = {}) {
     const { ctx } = this;
 
     try {
       const mapper = ctx.helper.getDB(ctx).sysJobMapper;
 
-      // 构造分页参数
-      const values = ctx.helper.page({
-        pageNum: page.pageNum,
-        pageSize: page.pageSize,
-      });
-
-      // 查询任务列表
-      const list = await mapper.selectJobList(
-        [values.offset, values.pageSize],
-        job
-      );
+      // 查询任务列表（不分页）
+      const list = await mapper.selectJobList([], params);
 
       // 为每个任务添加下次执行时间
       if (list && list.length > 0) {

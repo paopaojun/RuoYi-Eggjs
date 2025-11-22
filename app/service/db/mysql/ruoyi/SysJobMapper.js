@@ -30,7 +30,7 @@ class SysJobMapperService extends Service {
     }
 
     async selectJobList(values, params) {
-        return await this.db().select(this.selectJobListMapper(values, params));
+        return await this.db().selects(this.selectJobListMapper(values, params));
     }
 
     selectJobAllMapper(values, params) {
@@ -38,7 +38,7 @@ class SysJobMapperService extends Service {
     }
 
     async selectJobAll(values, params) {
-        return await this.db().select(this.selectJobAllMapper(values, params));
+        return await this.db().selects(this.selectJobAllMapper(values, params));
     }
 
     selectJobByIdMapper(values, params) {

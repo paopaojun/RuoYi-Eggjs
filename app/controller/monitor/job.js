@@ -7,6 +7,8 @@
 const Controller = require('egg').Controller;
 const { Route, HttpGet, HttpPost, HttpPut, HttpDelete } = require('egg-decorator-router');
 const { RequiresPermissions } = require('../../decorator/permission');
+const { Log, BusinessType } = require('../../decorator/log');
+const ExcelUtil = require('../../extend/excel');
 
 // 常量定义
 const Constants = {
@@ -292,6 +294,7 @@ module.exports = app => {
      * POST /api/monitor/job/export
      * 权限：monitor:job:export
      */
+    @Log({ title: '定时任务', businessType: BusinessType.EXPORT })
     @RequiresPermissions('monitor:job:export')
     @HttpPost('/export')
     async export() {
@@ -300,22 +303,42 @@ module.exports = app => {
       try {
         const params = ctx.request.body;
         
-        // 查询所有定时任务
-        const list = await service.monitor.job.selectJobList(
-          { pageNum: 1, pageSize: 100000 },
-          params
-        );
+        // 查询定时任务列表
+        const list = await service.monitor.job.selectJobList(params);
         
-        // 简化实现：返回 JSON 数据
-        // 实际项目中建议使用 Excel 导出
-        ctx.set('Content-Type', 'application/json');
-        ctx.set('Content-Disposition', `attachment; filename=job_${Date.now()}.json`);
+        // 定义 Excel 列配置
+        const columns = [
+          { header: '任务编号', key: 'jobId', width: 12 },
+          { header: '任务名称', key: 'jobName', width: 20 },
+          { header: '任务组名', key: 'jobGroup', width: 15 },
+          { header: '调用目标字符串', key: 'invokeTarget', width: 30 },
+          { header: 'cron执行表达式', key: 'cronExpression', width: 20 },
+          { header: '计划执行错误策略', key: 'misfirePolicyText', width: 20 },
+          { header: '是否并发执行', key: 'concurrentText', width: 15 },
+          { header: '状态', key: 'statusText', width: 10 },
+          { header: '创建时间', key: 'createTime', width: 20 }
+        ];
         
-        ctx.body = {
-          code: 200,
-          msg: '导出成功',
-          data: list
-        };
+        // 处理导出数据
+        const exportData = list.map(job => ({
+          ...job,
+          misfirePolicyText: ExcelUtil.convertDictValue(job.misfirePolicy, { 
+            '1': '立即执行', 
+            '2': '执行一次', 
+            '3': '放弃执行' 
+          }),
+          concurrentText: ExcelUtil.convertDictValue(job.concurrent, { 
+            '0': '允许', 
+            '1': '禁止' 
+          }),
+          statusText: ExcelUtil.convertDictValue(job.status, { 
+            '0': '正常', 
+            '1': '暂停' 
+          })
+        }));
+        
+        // 导出 Excel
+        ExcelUtil.exportExcel(ctx, exportData, columns, '定时任务数据');
       } catch (err) {
         ctx.logger.error('导出定时任务失败:', err);
         ctx.body = {

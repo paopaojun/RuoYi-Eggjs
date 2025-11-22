@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from sys_job
     </sql>
 	
-	<select id="selectJobList" parameterType="SysJob" resultMap="SysJobResult">
+	<selects id="selectJobList" parameterType="SysJob" resultMap="SysJobResult">
 		<include refid="selectJobVo"/>
 		<where>
 			<if test="jobName != null and jobName != ''">
@@ -41,11 +41,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				AND invoke_target like concat('%', #{invokeTarget}, '%')
 			</if>
 		</where>
-	</select>
+	</selects>
 	
-	<select id="selectJobAll" resultMap="SysJobResult">
+	<selects id="selectJobAll" resultMap="SysJobResult">
 		<include refid="selectJobVo"/>
-	</select>
+	</selects>
 	
 	<select id="selectJobById" parameterType="Long" resultMap="SysJobResult">
 		<include refid="selectJobVo"/>
