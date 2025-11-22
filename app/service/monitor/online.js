@@ -73,7 +73,7 @@ class OnlineService extends Service {
     
     // 删除在线用户信息
     // 通过 tokenId 反查 userId
-    const onlineKeys = await app.cache.default.keys(CacheConstants.ONLINE_USER_KEY + '*');
+    const onlineKeys = await app.cache.default.keys(CacheConstants.LOGIN_TOKEN_KEY + '*');
     
     for (const key of onlineKeys) {
       const onlineUser = await app.cache.default.get(key);

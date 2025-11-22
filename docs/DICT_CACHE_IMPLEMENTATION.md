@@ -131,7 +131,7 @@ const labels = await DictUtils.getDictLabels(app, 'sys_user_sex');
 
 #### 功能说明
 
-在应用启动完成后，自动加载所有字典缓存到内存中。
+在应用启动完成后，自动加载所有字典缓存和参数配置缓存到内存中。
 
 ```javascript
 class AppBootHook {
@@ -149,6 +149,14 @@ class AppBootHook {
       app.logger.info('✅ 字典缓存初始化完成');
     } catch (error) {
       app.logger.error('❌ 字典缓存初始化失败:', error);
+    }
+
+    try {
+      // 加载参数配置缓存
+      await ctx.service.system.config.loadingConfigCache();
+      app.logger.info('✅ 参数配置缓存初始化完成');
+    } catch (error) {
+      app.logger.error('❌ 参数配置缓存初始化失败:', error);
     }
   }
 }

@@ -64,7 +64,7 @@ async forceLogout(tokenId) {
   }
   
   // 3. 删除在线用户信息
-  const onlineKeys = await app.cache.default.keys(CacheConstants.ONLINE_USER_KEY + '*');
+  const onlineKeys = await app.cache.default.keys(CacheConstants.LOGIN_TOKEN_KEY + '*');
   
   for (const key of onlineKeys) {
     const onlineUser = await app.cache.default.get(key);
@@ -90,11 +90,8 @@ module.exports.CacheConstants = {
   // 登录用户 Token 缓存键前缀
   LOGIN_TOKEN_KEY: 'login_tokens:',
   
-  // 在线用户缓存键前缀
-  ONLINE_USER_KEY: 'online_user:',
-  
   // 验证码缓存键前缀
-  CAPTCHA_CODE_KEY: 'captcha:',
+  CAPTCHA_CODE_KEY: 'captcha_codes:',
   
   // 用户权限缓存键前缀
   USER_PERMISSIONS_KEY: 'user:permissions:',

@@ -34,7 +34,7 @@
     "lodash": "^4.17.21",
     "nanoid": "^3.3.7",
     "node-schedule": "^2.1.1",
-    "ruoyi-eggjs-cache": "^1",
+    "ruoyi-eggjs-cache": "^1.1.6",
     "ruoyi-eggjs-mybatis": "^1.1.6",
     "ruoyi-eggjs-mysql": "^1.1.7",
     "ruoyi-eggjs-ratelimiter": "^1",

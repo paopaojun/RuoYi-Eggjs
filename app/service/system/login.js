@@ -8,6 +8,7 @@ const Service = require("egg").Service;
 const captcha = require("trek-captcha");
 const { nanoid } = require("nanoid");
 const dayjs = require("dayjs");
+const { CacheConstants } = require("../../constant");
 
 class LoginService extends Service {
   /**
@@ -102,7 +103,7 @@ class LoginService extends Service {
     }
 
     // 从缓存中获取验证码
-    const cacheKey = `captcha:${uuid}`;
+    const cacheKey = CacheConstants.CAPTCHA_CODE_KEY + uuid;
     const cachedCode = await app.cache.default.get(cacheKey);
 
     if (!cachedCode) {
@@ -136,7 +137,7 @@ class LoginService extends Service {
     const uuid = nanoid();
 
     // 存储到缓存（5分钟过期）
-    const cacheKey = `captcha:${uuid}`;
+    const cacheKey = CacheConstants.CAPTCHA_CODE_KEY + uuid;
     await app.cache.default.set(cacheKey, token, { ttl: 300 });
 
     // 将 Buffer 转换为 Base64
@@ -167,7 +168,7 @@ class LoginService extends Service {
     };
 
     // 存储到 Redis（与 Token 过期时间一致）
-    const cacheKey = `online_user:${user.userId}`;
+    const cacheKey = CacheConstants.LOGIN_TOKEN_KEY + user.userId;
     await app.cache.default.set(cacheKey, onlineUser, {
       ttl: 7 * 24 * 60 * 60,
     });

@@ -5,6 +5,7 @@
  */
 
 const Service = require('egg').Service;
+const { CacheConstants } = require('../../constant');
 
 class ConfigService extends Service {
   async selectConfigPage(params = {}) {
@@ -64,7 +65,7 @@ class ConfigService extends Service {
     const { ctx, app } = this;
     
     // 先从缓存中获取
-    const cacheKey = `config:${configKey}`;
+    const cacheKey = CacheConstants.SYS_CONFIG_KEY + configKey;
     let configValue = await app.cache.default.get(cacheKey);
     
     if (configValue) {
@@ -124,7 +125,7 @@ class ConfigService extends Service {
     
     // 更新缓存
     if (result > 0) {
-      const cacheKey = `config:${config.configKey}`;
+      const cacheKey = CacheConstants.SYS_CONFIG_KEY + config.configKey;
       await app.cache.default.set(cacheKey, config.configValue, 0);
       return 1;
     }
@@ -153,12 +154,12 @@ class ConfigService extends Service {
     if (result > 0) {
       // 如果键名改变，删除旧的缓存
       if (oldConfig && oldConfig.configKey !== config.configKey) {
-        const oldCacheKey = `config:${oldConfig.configKey}`;
+        const oldCacheKey = CacheConstants.SYS_CONFIG_KEY + oldConfig.configKey;
         await app.cache.default.del(oldCacheKey);
       }
       
       // 更新新的缓存
-      const cacheKey = `config:${config.configKey}`;
+      const cacheKey = CacheConstants.SYS_CONFIG_KEY + config.configKey;
       await app.cache.default.set(cacheKey, config.configValue, 0);
       
       return 1;
@@ -194,7 +195,7 @@ class ConfigService extends Service {
       await ctx.helper.getMasterDB(ctx).sysConfigMapper.deleteConfigById([], {configId});
       
       // 删除缓存
-      const cacheKey = `config:${config.configKey}`;
+      const cacheKey = CacheConstants.SYS_CONFIG_KEY + config.configKey;
       await app.cache.default.del(cacheKey);
       
       deletedCount++;
@@ -214,7 +215,7 @@ class ConfigService extends Service {
     
     // 存入缓存
     for (const config of configs) {
-      const cacheKey = `config:${config.configKey}`;
+      const cacheKey = CacheConstants.SYS_CONFIG_KEY + config.configKey;
       await app.cache.default.set(cacheKey, config.configValue, 0);
     }
     
@@ -228,7 +229,7 @@ class ConfigService extends Service {
     const { app } = this;
     
     // 获取所有缓存键
-    const keys = await app.cache.default.keys('config:*');
+    const keys = await app.cache.default.keys(CacheConstants.SYS_CONFIG_KEY + '*');
     
     // 删除所有参数缓存
     for (const key of keys) {
