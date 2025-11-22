@@ -368,9 +368,8 @@ class VelocityUtils {
   static render(template, context) {
     try {
       // 使用 velocityjs 渲染模板
-      const aster = new Velocity.Parser(template);
-      const render = new Velocity.Compile(aster.parse());
-      return render.render(context);
+      // velocityjs 2.x 的正确用法是直接调用 render 方法
+      return Velocity.render(template, context);
     } catch (error) {
       throw new Error(`模板渲染失败: ${error.message}`);
     }

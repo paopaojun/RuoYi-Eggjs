@@ -132,8 +132,8 @@ class GenService extends Service {
     try {
       const result = await ctx.helper.getDB(ctx).genTableMapper.selectGenTableById([],{tableId});
       
-      if (result && result.length > 0) {
-        const genTable = result[0];
+      if (result != null) {
+        const genTable = result;
         await this.setTableFromOptions(genTable);
         // 查询列信息
         genTable.columns = await this.selectGenTableColumnListByTableId(tableId);
@@ -156,10 +156,10 @@ class GenService extends Service {
     const { ctx } = this;
     
     try {
-      const result = await ctx.helper.getDB(ctx).genTableMapper.selectGenTableByName([tableName]);
+      const result = await ctx.helper.getDB(ctx).genTableMapper.selectGenTableByName([],{tableName});
       
-      if (result && result.length > 0) {
-        const genTable = result[0];
+      if (result != null) {
+        const genTable = result;
         await this.setTableFromOptions(genTable);
         // 查询列信息
         genTable.columns = await this.selectGenTableColumnListByTableId(genTable.tableId);
@@ -202,7 +202,18 @@ class GenService extends Service {
     try {
       const result = await ctx.helper.getDB(ctx).genTableColumnMapper.selectDbTableColumnsByName([], { tableName });
       
-      return result || [];
+      // 确保返回数组
+      if (!result) {
+        ctx.logger.warn(`查询表 ${tableName} 的字段为空`);
+        return [];
+      }
+      
+      if (!Array.isArray(result)) {
+        ctx.logger.warn(`查询表 ${tableName} 的字段结果不是数组:`, typeof result, result);
+        return [];
+      }
+      
+      return result;
     } catch (err) {
       ctx.logger.error('查询表字段失败:', err);
       return [];
@@ -233,12 +244,23 @@ class GenService extends Service {
         // 保存表信息
         const result = await ctx.helper.getMasterDB(ctx).genTableMapper.insertGenTable([],table);
         
-        if (result && result.affectedRows > 0) {
+        if (result > 0) {
           // 获取插入的表ID
-          const tableId = result.insertId;
+          const tableId = result;
           
           // 保存列信息
           const genTableColumns = await this.selectDbTableColumnsByName(tableName);
+          
+          // 确保 genTableColumns 是数组
+          if (!Array.isArray(genTableColumns)) {
+            ctx.logger.error(`表 ${tableName} 的字段信息不是数组类型:`, typeof genTableColumns);
+            throw new Error(`获取表 ${tableName} 的字段信息失败`);
+          }
+          
+          if (genTableColumns.length === 0) {
+            ctx.logger.warn(`表 ${tableName} 没有字段信息`);
+          }
+          
           for (const column of genTableColumns) {
             GenUtils.initColumnField(column, table);
             column.tableId = tableId;
