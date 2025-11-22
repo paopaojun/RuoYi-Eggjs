@@ -9,20 +9,19 @@ const Service = require('egg').Service;
 class ${ClassName}Service extends Service {
 
   /**
-   * 查询${functionName}列表
-   * @param {object} values - 分页参数
+   * 查询${functionName}列表（分页）
    * @param {object} params - 查询参数
    * @return {object} 查询结果
    */
-  async select${ClassName}List(values, params) {
+  async select${ClassName}List(params = {}) {
     const { ctx } = this;
-    
-    const result = await ctx.helper.getDB(ctx).${className}Mapper.select${ClassName}List(
-      values,
-      params
+    const mapper = ctx.helper.getDB(ctx).${className}Mapper;
+
+    return await ctx.helper.pageQuery(
+      mapper.select${ClassName}ListMapper([], params),
+      params,
+      mapper.db()
     );
-    
-    return result;
   }
 
   /**

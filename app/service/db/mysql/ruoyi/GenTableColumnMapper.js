@@ -30,7 +30,7 @@ class GenTableColumnMapperService extends Service {
     }
 
     async selectGenTableColumnListByTableId(values, params) {
-        return await this.db().select(this.selectGenTableColumnListByTableIdMapper(values, params));
+        return await this.db().selects(this.selectGenTableColumnListByTableIdMapper(values, params));
     }
 
     selectDbTableColumnsByNameMapper(values, params) {
@@ -38,7 +38,7 @@ class GenTableColumnMapperService extends Service {
     }
 
     async selectDbTableColumnsByName(values, params) {
-        return await this.db().select(this.selectDbTableColumnsByNameMapper(values, params));
+        return await this.db().selects(this.selectDbTableColumnsByNameMapper(values, params));
     }
 
     insertGenTableColumnMapper(values, params) {

@@ -21,14 +21,26 @@ module.exports = app => {
     @RequiresPermissions('${permissionPrefix}:list')
     @HttpGet('/list')
     async list() {
-      const { ctx } = this;
-      
-      const result = await ctx.service.${moduleName}.${businessName}.select${ClassName}List(
-        ctx.helper.page(ctx.query),
-        ctx.query
-      );
-      
-      ctx.body = result;
+      const { ctx, service } = this;
+
+      try {
+        const params = ctx.query;
+
+        // 查询列表
+        const result = await service.${moduleName}.${businessName}.select${ClassName}List(params);
+
+        ctx.body = {
+          code: 200,
+          msg: "查询成功",
+          ...result,
+        };
+      } catch (err) {
+        ctx.logger.error('查询${functionName}列表失败:', err);
+        ctx.body = {
+          code: 500,
+          msg: err.message || '查询${functionName}列表失败'
+        };
+      }
     }
 
     /**

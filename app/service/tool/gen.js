@@ -137,6 +137,15 @@ class GenService extends Service {
         await this.setTableFromOptions(genTable);
         // 查询列信息
         genTable.columns = await this.selectGenTableColumnListByTableId(tableId);
+        
+        // 调试日志
+        ctx.logger.info(`查询表 ${tableId} 的列信息:`, {
+          columnsType: typeof genTable.columns,
+          isArray: Array.isArray(genTable.columns),
+          columnsLength: Array.isArray(genTable.columns) ? genTable.columns.length : 'N/A',
+          columns: genTable.columns
+        });
+        
         return genTable;
       }
       
@@ -184,7 +193,19 @@ class GenService extends Service {
     try {
       const result = await ctx.helper.getDB(ctx).genTableColumnMapper.selectGenTableColumnListByTableId([], { tableId });
       
-      return result || [];
+      // 确保返回数组
+      if (!result) {
+        ctx.logger.warn(`查询表 ${tableId} 的字段列表为空`);
+        return [];
+      }
+      
+      if (!Array.isArray(result)) {
+        ctx.logger.error(`查询表 ${tableId} 的字段列表不是数组:`, typeof result, result);
+        return [];
+      }
+      
+      ctx.logger.info(`查询表 ${tableId} 的字段列表成功，共 ${result.length} 个字段`);
+      return result;
     } catch (err) {
       ctx.logger.error('查询表字段列表失败:', err);
       return [];
@@ -641,7 +662,20 @@ class GenService extends Service {
    * @param {object} table - 表信息
    */
   setPkColumn(table) {
-    const columns = table.columns || [];
+    const { ctx } = this;
+    
+    // 确保 columns 是数组
+    if (!table.columns) {
+      ctx.logger.warn('表信息中缺少 columns 字段');
+      table.columns = [];
+    }
+    
+    if (!Array.isArray(table.columns)) {
+      ctx.logger.error('表的 columns 不是数组类型:', typeof table.columns, table.columns);
+      table.columns = [];
+    }
+    
+    const columns = table.columns;
     
     for (const column of columns) {
       if (column.isPk === '1') {
