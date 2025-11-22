@@ -268,7 +268,7 @@ class JobService extends Service {
       // 更新数据库
       const result = await mapper.updateJob([],fullJob);
 
-      if (result.affectedRows > 0) {
+      if (result > 0) {
         // 使用 Bull 根据状态启动或暂停任务
         if (job.status === "0") {
           // 恢复任务
@@ -279,7 +279,7 @@ class JobService extends Service {
         }
       }
 
-      return result.affectedRows;
+      return result;
     } catch (err) {
       ctx.logger.error("修改任务状态失败:", err);
       throw err;
@@ -488,31 +488,40 @@ class JobService extends Service {
     const { app, ctx } = this;
 
     try {
-      // 生成唯一任务 ID
+      // 生成唯一任务 ID（用于标识，但不作为 Bull 任务名称）
       const jobKey = `${job.jobId}_${job.jobGroup}`;
 
-      // 移除旧的重复任务（如果存在）
+      // 移除旧的重复任务（如果存在）- 先删除再创建，避免重复
       const repeatableJobs = await app.queue.ryTask.getRepeatableJobs();
-      for (const oldJob of repeatableJobs) {
-        if (oldJob.name === jobKey) {
-          await app.queue.ryTask.removeRepeatableByKey(oldJob.key);
+      
+      ctx.logger.info(`[Bull] 准备创建任务 ${job.jobName}, jobKey: ${jobKey}`);
+      ctx.logger.info(`[Bull] 当前 repeat jobs 数量: ${repeatableJobs.length}`);
+      
+      // 通过 jobKey 匹配并删除旧任务
+      for (const repeatJob of repeatableJobs) {
+        // repeatJob.key 的格式类似：repeat:ryTask:::Asia/Shanghai:{jobKey}
+        // 我们设置的自定义 key 会被 Bull 包装成这种格式
+        if (repeatJob.key && repeatJob.key.includes(jobKey)) {
+          ctx.logger.info(`[Bull] 删除旧的重复任务: ${repeatJob.key}`);
+          await app.queue.ryTask.removeRepeatableByKey(repeatJob.key);
         }
       }
 
-      // 添加新的重复任务
+      // 添加新的重复任务（不使用名称参数，使用默认处理器）
       await app.queue.ryTask.add(
-        jobKey, // 任务名称
         {
           invokeTarget: job.invokeTarget,
           jobInfo: {
             jobId: job.jobId,
             jobName: job.jobName,
             jobGroup: job.jobGroup,
+            jobKey, // 保存 jobKey 用于标识
           },
         },
         {
           repeat: {
-            cron: job.cronExpression, // 使用数据库中的 cron 表达式
+            cron: job.cronExpression,
+            key: jobKey, // 使用 jobKey 作为 repeat job 的唯一标识
           },
           removeOnComplete: true,
           removeOnFail: 100,
@@ -563,13 +572,28 @@ class JobService extends Service {
 
       // 获取所有重复任务
       const repeatableJobs = await app.queue.ryTask.getRepeatableJobs();
+      
+      ctx.logger.info(`[Bull] 查找要删除的任务: ${job.jobName}, jobKey: ${jobKey}`);
+      ctx.logger.info(`[Bull] 当前重复任务数量: ${repeatableJobs.length}`);
 
-      // 删除匹配的任务
+      let deleted = false;
+      // 通过 jobKey 匹配删除（与 createBullJob 一致）
       for (const repeatJob of repeatableJobs) {
-        if (repeatJob.name === jobKey) {
+        if (repeatJob.key && repeatJob.key.includes(jobKey)) {
+          ctx.logger.info(`[Bull] 找到匹配任务，准备删除: ${repeatJob.key}`);
           await app.queue.ryTask.removeRepeatableByKey(repeatJob.key);
           ctx.logger.info(`[Bull] 删除定时任务成功: ${job.jobName}`);
+          deleted = true;
+          break; // 找到并删除后退出
         }
+      }
+
+      if (!deleted) {
+        ctx.logger.warn(`[Bull] 未找到要删除的任务: ${job.jobName}, jobKey: ${jobKey}`);
+        // 输出所有 repeat job keys 用于调试
+        repeatableJobs.forEach(rj => {
+          ctx.logger.info(`[Bull] 现有任务 key: ${rj.key}`);
+        });
       }
 
       return true;
