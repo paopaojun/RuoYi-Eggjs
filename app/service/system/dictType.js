@@ -5,6 +5,7 @@
  */
 
 const Service = require('egg').Service;
+const DictUtils = require('../../utils/dictUtils');
 
 class DictTypeService extends Service {
   async selectDictTypePage(params = {}) {
@@ -104,7 +105,7 @@ class DictTypeService extends Service {
    * @return {number} 影响行数
    */
   async insertDictType(dictType) {
-    const { ctx } = this;
+    const { ctx, app } = this;
     
     // 设置创建信息
     dictType.createBy = ctx.state.user.userName;
@@ -112,9 +113,9 @@ class DictTypeService extends Service {
     // 插入字典类型
     const result = await ctx.helper.getMasterDB(ctx).sysDictTypeMapper.insertDictType([], dictType);
     
-    // 清空缓存
+    // 设置空缓存
     if (result > 0) {
-      await this.clearDictCache();
+      await DictUtils.setDictCache(app, dictType.dictType, []);
       return 1;
     }
     
@@ -127,7 +128,7 @@ class DictTypeService extends Service {
    * @return {number} 影响行数
    */
   async updateDictType(dictType) {
-    const { ctx } = this;
+    const { ctx, app } = this;
     
     // 查询旧的字典类型
     const oldDict = await this.selectDictTypeById(dictType.dictId);
@@ -143,9 +144,10 @@ class DictTypeService extends Service {
       await ctx.helper.getMasterDB(ctx).sysDictDataMapper.updateDictDataType([], {oldDictType: oldDict.dictType, newDictType: dictType.dictType});
     }
     
-    // 清空缓存
+    // 更新缓存
     if (result > 0) {
-      await this.clearDictCache();
+      const dictDatas = await ctx.helper.getDB(ctx).sysDictDataMapper.selectDictDataByType([], {dictType: dictType.dictType});
+      await DictUtils.setDictCache(app, dictType.dictType, dictDatas);
       return 1;
     }
     
@@ -158,7 +160,7 @@ class DictTypeService extends Service {
    * @return {number} 影响行数
    */
   async deleteDictTypeByIds(dictIds) {
-    const { ctx } = this;
+    const { ctx, app } = this;
     
     let deletedCount = 0;
     
@@ -179,12 +181,10 @@ class DictTypeService extends Service {
       
       // 删除字典类型
       await ctx.helper.getMasterDB(ctx).sysDictTypeMapper.deleteDictTypeById([], {dictId});
+      
+      // 删除对应缓存
+      await DictUtils.removeDictCache(app, dictType.dictType);
       deletedCount++;
-    }
-    
-    // 清空缓存
-    if (deletedCount > 0) {
-      await this.clearDictCache();
     }
     
     return deletedCount;
@@ -195,31 +195,7 @@ class DictTypeService extends Service {
    */
   async loadingDictCache() {
     const { ctx, app } = this;
-
-    // 查询所有正常状态的字典数据
-    const dictDataList = await ctx.helper
-      .getDB(ctx)
-      .sysDictDataMapper.selectDictDataList([], { status: "0" });
-
-    // 按字典类型分组
-    const dictDataMap = {};
-    dictDataList.forEach((data) => {
-      if (!dictDataMap[data.dictType]) {
-        dictDataMap[data.dictType] = [];
-      }
-      dictDataMap[data.dictType].push(data);
-    });
-
-    // 存入缓存（每组已按 dictSort 排序）
-    for (const dictType in dictDataMap) {
-      await app.cache.default.set(
-        `dict_${dictType}`,
-        JSON.stringify(dictDataMap[dictType]),
-        0
-      );
-    }
-
-    ctx.logger.info("字典缓存加载完成");
+    await DictUtils.loadingDictCache(app, ctx);
   }
 
   /**
@@ -227,25 +203,15 @@ class DictTypeService extends Service {
    */
   async clearDictCache() {
     const { app } = this;
-    
-    // 获取所有缓存键
-    const keys = await app.cache.default.keys('dict_*');
-    
-    // 删除所有字典缓存
-    for (const key of keys) {
-      await app.cache.default.del(key);
-    }
+    await DictUtils.clearDictCache(app);
   }
 
   /**
    * 重置字典缓存
    */
   async resetDictCache() {
-    // 清空缓存
-    await this.clearDictCache();
-    
-    // 重新加载缓存
-    await this.loadingDictCache();
+    const { ctx, app } = this;
+    await DictUtils.resetDictCache(app, ctx);
   }
 }
 
