@@ -428,14 +428,14 @@ class MenuService extends Service {
     // 调用 Mapper 获取权限字符串列表
     const permsList = await ctx.helper
       .getDB(ctx)
-      .sysMenuMapper.selectMenuPermsByRoleId([roleId]);
+      .sysMenuMapper.selectMenuPermsByRoleId([],{roleId});
 
     const permsSet = [];
 
     // 处理每个权限字符串，按逗号分割
     for (const perm of permsList) {
-      if (perm && perm.trim()) {
-        permsSet.push(...perm.trim().split(","));
+      if (perm && perm.perms && perm.perms.trim()) {
+        permsSet.push(...perm.perms.trim().split(","));
       }
     }
 

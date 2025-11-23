@@ -455,33 +455,41 @@ class UserService extends Service {
   }
 
   /**
-   * 查询用户角色�?
-   * @param {string} userName - 用户�?
-   * @return {string} 角色�?
+   * 查询用户角色组
+   * @param {string} userName - 用户名
+   * @return {string} 角色组
    */
   async selectUserRoleGroup(userName) {
     const { ctx } = this;
 
     const roles = await ctx.helper
       .getMasterDB(ctx)
-      .sysUserRoleMapper.selectUserRoleGroup([], { userName });
+      .sysRoleMapper.selectRolesByUserName([],{userName});
 
-    return roles.map((r) => r.roleName).join(",");
+    if (!roles || roles.length === 0) {
+      return '';
+    }
+
+    return roles.map((r) => r.roleName).join(',');
   }
 
   /**
-   * 查询用户岗位�?
-   * @param {string} userName - 用户�?
-   * @return {string} 岗位�?
+   * 查询用户岗位组
+   * @param {string} userName - 用户名
+   * @return {string} 岗位组
    */
   async selectUserPostGroup(userName) {
     const { ctx } = this;
 
     const posts = await ctx.helper
       .getMasterDB(ctx)
-      .sysUserPostMapper.selectUserPostGroup([], { userName });
+      .sysPostMapper.selectPostsByUserName([], { userName });
 
-    return posts.map((p) => p.postName).join(",");
+    if (!posts || posts.length === 0) {
+      return '';
+    }
+
+    return posts.map((p) => p.postName).join(',');
   }
 
   /**
