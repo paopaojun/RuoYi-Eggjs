@@ -10,7 +10,7 @@ const { Route, HttpPost, HttpGet, HttpAll } = require("egg-decorator-router");
 module.exports = (app) => {
   const { secret, expiresIn } = app.config.jwt;
 
-  @Route("/")
+  @Route("")
   class LoginController extends Controller {
     /**
      * 用户登录

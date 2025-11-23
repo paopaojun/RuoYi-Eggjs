@@ -18,7 +18,7 @@ class OnlineService extends Service {
     const { app } = this;
     
     // 获取所有在线用户缓存键
-    const keys = await app.cache.default.keys('online_user:*');
+    const keys = await app.cache.default.keys(CacheConstants.LOGIN_TOKEN_KEY + '*');
     
     const userOnlineList = [];
     
