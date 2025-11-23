@@ -12,7 +12,7 @@ const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
-  @Route('/api/system/dict/data')
+  @Route('/system/dict/data')
   class DictDataController extends Controller {
 
     /**

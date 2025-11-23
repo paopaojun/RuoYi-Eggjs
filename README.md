@@ -238,7 +238,7 @@ npm stop
 打开浏览器访问：[http://localhost:7001](http://localhost:7001)
 
 测试接口：
-- 版本信息：`GET http://localhost:7001/api/version`
+- 版本信息：`GET http://localhost:7001/version`
 
 ### 前端项目
 
@@ -248,7 +248,7 @@ npm stop
 
 ``` javascript
 // vite.config.js
-const baseUrl = 'http://localhost:7001/api' // 后端接口
+const baseUrl = 'http://localhost:7001' // 后端接口
 ```
 
 ## ⚙️ 配置说明
@@ -357,7 +357,7 @@ class SysUserMapperService extends Service {
 ```javascript
 const { Route, HttpGet, HttpPost } = require('egg-decorator-router');
 
-@Route('/api/user')
+@Route('/user')
 class UserController extends Controller {
   
   @HttpPost('/list')
@@ -493,7 +493,7 @@ npm stop
 
 ### 目录规范
 
-- **Controller**：`app/controller/api/*.js` - API 控制器
+- **Controller**：`app/controller/**/*.js` - API 控制器
 - **Service**：`app/service/*.js` - 业务逻辑
 - **Middleware**：`app/middleware/*.js` - 中间件
 - **Mapper**：`mapper/mysql/数据库名/*.xml` - SQL 映射文件

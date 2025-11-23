@@ -8,9 +8,9 @@ module.exports = (options = {}) => {
   return async function permission(ctx, next) {
     // 跳过不需要权限验证的路由
     const skipRoutes = options.skipRoutes || [
-      '/api/login',
-      '/api/register',
-      '/api/captchaImage'
+      '/login',
+      '/register',
+      '/captchaImage'
     ];
     
     // 检查当前路由是否需要跳过

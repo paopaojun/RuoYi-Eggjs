@@ -10,7 +10,7 @@ const { RequiresPermissions } = require('../../decorator/permission');
 
 module.exports = app => {
 
-  @Route('/api/tool/gen')
+  @Route('/tool/gen')
   class GenController extends Controller {
 
     /**

@@ -10,7 +10,7 @@ const { RequiresPermissions } = require('../../decorator/permission');
 
 module.exports = app => {
 
-  @Route('/api/monitor/server')
+  @Route('/monitor/server')
   class ServerController extends Controller {
 
     /**

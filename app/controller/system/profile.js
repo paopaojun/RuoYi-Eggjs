@@ -11,7 +11,7 @@ const fs = require('fs');
 
 module.exports = app => {
 
-  @Route('/api/system/user/profile')
+  @Route('/system/user/profile')
   class ProfileController extends Controller {
 
     /**

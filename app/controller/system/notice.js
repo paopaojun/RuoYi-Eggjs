@@ -11,7 +11,7 @@ const { Log, BusinessType } = require('../../decorator/log');
 
 module.exports = app => {
 
-  @Route('/api/system/notice')
+  @Route('/system/notice')
   class NoticeController extends Controller {
 
     /**

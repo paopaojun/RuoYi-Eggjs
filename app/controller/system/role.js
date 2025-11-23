@@ -17,7 +17,7 @@ const { Log, BusinessType } = require("../../decorator/log");
 const ExcelUtil = require("../../extend/excel");
 
 module.exports = (app) => {
-  @Route("/api/system/role")
+  @Route("/system/role")
   class RoleController extends Controller {
     /**
      * 获取角色列表（分页）

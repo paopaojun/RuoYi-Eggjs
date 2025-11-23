@@ -10,7 +10,7 @@ const { RequiresPermissions } = require('../../decorator/permission');
 
 module.exports = app => {
 
-  @Route('/api/monitor/cache')
+  @Route('/monitor/cache')
   class CacheController extends Controller {
 
     /**

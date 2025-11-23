@@ -32,7 +32,7 @@ const Constants = {
 
 module.exports = app => {
 
-  @Route('/api/monitor/job')
+  @Route('/monitor/job')
   class JobController extends Controller {
 
     /**

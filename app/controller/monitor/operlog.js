@@ -12,7 +12,7 @@ const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
-  @Route('/api/monitor/operlog')
+  @Route('/monitor/operlog')
   class OperlogController extends Controller {
 
     /**

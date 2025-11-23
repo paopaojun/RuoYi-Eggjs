@@ -11,7 +11,7 @@ const fs = require('fs');
 
 module.exports = app => {
 
-  @Route('/api/common')
+  @Route('/common')
   class CommonController extends Controller {
 
     /**

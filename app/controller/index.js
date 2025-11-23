@@ -21,7 +21,7 @@ const {
 module.exports = (app) => {
   const { secret, expiresIn } = app.config.jwt;
 
-  @Route("/api")
+  @Route("/")
   class IndexController extends Controller {
     @HttpAll("/version")
     async version() {

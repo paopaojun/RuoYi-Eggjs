@@ -12,7 +12,7 @@ const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
-  @Route('/api/monitor/logininfor')
+  @Route('/monitor/logininfor')
   class LogininforController extends Controller {
 
     /**

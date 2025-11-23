@@ -12,7 +12,7 @@ const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
-  @Route('/api/system/post')
+  @Route('/system/post')
   class PostController extends Controller {
 
     /**

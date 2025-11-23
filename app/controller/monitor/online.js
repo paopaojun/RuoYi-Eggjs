@@ -11,7 +11,7 @@ const { Log, BusinessType } = require('../../decorator/log');
 
 module.exports = app => {
 
-  @Route('/api/monitor/online')
+  @Route('/monitor/online')
   class OnlineController extends Controller {
 
     /**

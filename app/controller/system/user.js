@@ -12,7 +12,7 @@ const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
-  @Route('/api/system/user')
+  @Route('/system/user')
   class UserController extends Controller {
 
     /**
