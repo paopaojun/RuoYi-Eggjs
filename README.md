@@ -6,240 +6,24 @@
 [![Node](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen.svg)](https://nodejs.org)
 [![Egg](https://img.shields.io/badge/egg-%5E3-blue.svg)](https://eggjs.org)
 
-基于 Egg.js 框架开发的企业级后台管理系统，100% 实现若依（RuoYi-Vue）系统功能，采用 MyBatis XML 风格的 SQL，实现对若依数据库及 MyBatis XML 文件的完全复用。
-
----
-
-## 🎯 若依 API 实现
-
-#### 认证授权模块
-+ `/captchaImage` - 获取验证码 ✅（已完成）
-+ `/login` - 用户登录 ✅（已完成）
-+ `/logout` - 用户登出 ✅（已完成）
-+ `/getInfo` - 获取用户信息 ✅（已完成）
-+ `/getRouters` - 获取路由菜单 ✅（已完成）
-+ `/register` - 用户注册
-
-#### 用户管理模块
-+ `/api/system/user/list` - 用户列表（分页） ✅（已完成）
-+ `/api/system/user/:userId` - 用户详情 ✅（已完成）
-+ `/api/system/user` (POST) - 新增用户 ✅（已完成）
-+ `/api/system/user` (PUT) - 修改用户 ✅（已完成）
-+ `/api/system/user/:userIds` (DELETE) - 删除用户 ✅（已完成）
-+ `/api/system/user/resetPwd` - 重置密码 ✅（已完成）
-+ `/api/system/user/changeStatus` - 修改状态 ✅（已完成）
-+ `/api/system/user/authRole/:userId` - 查询授权角色 ✅（已完成）
-+ `/api/system/user/authRole` (PUT) - 用户授权 ✅（已完成）
-+ `/api/system/user/deptTree` - 部门树选择 ✅（已完成）
-+ `/api/system/user/export` - 导出用户 ✅（已完成）
-+ `/api/system/user/import` - 导入用户 ✅（已完成）
-+ `/api/system/user/importTemplate` - 导入模板 ✅（已完成）
-
-#### 角色管理模块
-+ `/api/system/role/list` - 角色列表（分页） ✅（已完成）
-+ `/api/system/role/:roleId` - 角色详情 ✅（已完成）
-+ `/api/system/role` (POST) - 新增角色 ✅（已完成）
-+ `/api/system/role` (PUT) - 修改角色 ✅（已完成）
-+ `/api/system/role/:roleIds` (DELETE) - 删除角色 ✅（已完成）
-+ `/api/system/role/changeStatus` - 修改状态 ✅（已完成）
-+ `/api/system/role/dataScope` - 数据权限 ✅（已完成）
-+ `/api/system/role/allocatedList` - 已授权用户列表 ✅（已完成）
-+ `/api/system/role/unallocatedList` - 未授权用户列表 ✅（已完成）
-+ `/api/system/role/authUser/cancel` - 取消授权 ✅（已完成）
-+ `/api/system/role/authUser/cancelAll` - 批量取消授权 ✅（已完成）
-+ `/api/system/role/authUser/selectAll` - 批量授权 ✅（已完成）
-+ `/api/system/role/deptTree/:roleId` - 角色部门树 ✅（已完成）
-+ `/api/system/role/export` - 导出角色 ✅（已完成）
-
-#### 菜单管理模块
-+ `/api/system/menu/list` - 菜单列表（树形） ✅（已完成）
-+ `/api/system/menu/:menuId` - 菜单详情 ✅（已完成）
-+ `/api/system/menu` (POST) - 新增菜单 ✅（已完成）
-+ `/api/system/menu` (PUT) - 修改菜单 ✅（已完成）
-+ `/api/system/menu/:menuId` (DELETE) - 删除菜单 ✅（已完成）
-+ `/api/system/menu/treeselect` - 菜单树选择 ✅（已完成）
-+ `/api/system/menu/roleMenuTreeselect/:roleId` - 角色菜单树 ✅（已完成）
-
-#### 部门管理模块
-+ `/api/system/dept/list` - 部门列表（树形） ✅（已完成）
-+ `/api/system/dept/:deptId` - 部门详情 ✅（已完成）
-+ `/api/system/dept` (POST) - 新增部门 ✅（已完成）
-+ `/api/system/dept` (PUT) - 修改部门 ✅（已完成）
-+ `/api/system/dept/:deptId` (DELETE) - 删除部门 ✅（已完成）
-+ `/api/system/dept/list/exclude/:deptId` - 排除节点查询 ✅（已完成）
-+ `/api/system/dept/treeselect` - 部门树选择 ✅（已完成）
-+ `/api/system/dept/roleDeptTreeselect/:roleId` - 角色部门树 ✅（已完成）
-
-#### 岗位管理模块
-+ `/api/system/post/list` - 岗位列表（分页） ✅（已完成）
-+ `/api/system/post/:postId` - 岗位详情 ✅（已完成）
-+ `/api/system/post` (POST) - 新增岗位 ✅（已完成）
-+ `/api/system/post` (PUT) - 修改岗位 ✅（已完成）
-+ `/api/system/post/:postIds` (DELETE) - 删除岗位 ✅（已完成）
-+ `/api/system/post/export` - 导出岗位 ✅（已完成）
-
-#### 字典类型管理模块
-+ `/api/system/dict/type/list` - 字典类型列表（分页） ✅（已完成）
-+ `/api/system/dict/type/:dictId` - 字典类型详情 ✅（已完成）
-+ `/api/system/dict/type` (POST) - 新增字典类型 ✅（已完成）
-+ `/api/system/dict/type` (PUT) - 修改字典类型 ✅（已完成）
-+ `/api/system/dict/type/:dictIds` (DELETE) - 删除字典类型 ✅（已完成）
-+ `/api/system/dict/type/refreshCache` (DELETE) - 刷新字典缓存 ✅（已完成）
-+ `/api/system/dict/type/optionselect` - 字典选择框列表 ✅（已完成）
-+ `/api/system/dict/type/export` - 导出字典类型 ✅（已完成）
-
-#### 字典数据管理模块
-+ `/api/system/dict/data/list` - 字典数据列表（分页） ✅（已完成）
-+ `/api/system/dict/data/:dictCode` - 字典数据详情 ✅（已完成）
-+ `/api/system/dict/data/type/:dictType` - 根据类型查询 ✅（已完成）
-+ `/api/system/dict/data` (POST) - 新增字典数据 ✅（已完成）
-+ `/api/system/dict/data` (PUT) - 修改字典数据 ✅（已完成）
-+ `/api/system/dict/data/:dictCodes` (DELETE) - 删除字典数据 ✅（已完成）
-+ `/api/system/dict/data/export` - 导出字典数据 ✅（已完成）
-
-#### 参数配置管理模块
-+ `/api/system/config/list` - 参数配置列表（分页） ✅（已完成）
-+ `/api/system/config/:configId` - 参数配置详情 ✅（已完成）
-+ `/api/system/config/configKey/:configKey` - 根据键名查询 ✅（已完成）
-+ `/api/system/config` (POST) - 新增参数配置 ✅（已完成）
-+ `/api/system/config` (PUT) - 修改参数配置 ✅（已完成）
-+ `/api/system/config/:configIds` (DELETE) - 删除参数配置 ✅（已完成）
-+ `/api/system/config/refreshCache` (DELETE) - 刷新参数缓存 ✅（已完成）
-+ `/api/system/config/export` - 导出参数配置 ✅（已完成）
-
-#### 通知公告管理模块
-+ `/api/system/notice/list` - 通知公告列表（分页） ✅（已完成）
-+ `/api/system/notice/:noticeId` - 通知公告详情 ✅（已完成）
-+ `/api/system/notice` (POST) - 新增通知公告 ✅（已完成）
-+ `/api/system/notice` (PUT) - 修改通知公告 ✅（已完成）
-+ `/api/system/notice/:noticeIds` (DELETE) - 删除通知公告 ✅（已完成）
-
----
-
-### 系统监控模块
-
-#### 在线用户监控
-+ `/api/monitor/online/list` - 在线用户列表 ✅（已完成）
-+ `/api/monitor/online/:tokenId` (DELETE) - 强退用户 ✅（已完成）
-
-#### 登录日志监控
-+ `/api/monitor/logininfor/list` - 登录日志列表（分页） ✅（已完成）
-+ `/api/monitor/logininfor/:infoIds` (DELETE) - 删除登录日志 ✅（已完成）
-+ `/api/monitor/logininfor/clean` (DELETE) - 清空登录日志 ✅（已完成）
-+ `/api/monitor/logininfor/unlock/:userName` - 解锁用户 ✅（已完成）
-+ `/api/monitor/logininfor/export` - 导出登录日志 ✅（已完成）
-
-#### 操作日志监控
-+ `/api/monitor/operlog/list` - 操作日志列表（分页） ✅（已完成）
-+ `/api/monitor/operlog/:operIds` (DELETE) - 删除操作日志 ✅（已完成）
-+ `/api/monitor/operlog/clean` (DELETE) - 清空操作日志 ✅（已完成）
-+ `/api/monitor/operlog/export` - 导出操作日志 ✅（已完成）
-
-#### 服务监控
-+ `/api/monitor/server` - 获取服务器信息 ✅（已完成）
-
-#### 缓存监控
-+ `/api/monitor/cache` - 缓存信息 ✅（已完成）
-+ `/api/monitor/cache/getNames` - 缓存名称列表 ✅（已完成）
-+ `/api/monitor/cache/getKeys/:cacheName` - 缓存键名列表 ✅（已完成）
-+ `/api/monitor/cache/getValue/:cacheName/:cacheKey` - 缓存内容 ✅（已完成）
-+ `/api/monitor/cache/clearCacheName/:cacheName` (DELETE) - 清空缓存名称 ✅（已完成）
-+ `/api/monitor/cache/clearCacheKey/:cacheKey` (DELETE) - 清空缓存键值 ✅（已完成）
-+ `/api/monitor/cache/clearCacheAll` (DELETE) - 清空全部缓存 ✅（已完成）
-
-#### 定时任务监控 ✅（已完成 - 使用 egg-bull）
-
-**基于 egg-bull 实现动态定时任务调度**：
-
-**核心特性**：
-+ ✅ 动态配置：从数据库读取 cron 表达式，无需重启
-+ ✅ 手动调用：支持立即执行任务
-+ ✅ 失败重试：自动重试失败的任务
-+ ✅ 分布式支持：基于 Redis，支持集群环境
-+ ✅ 任务日志：自动记录执行日志到数据库
-+ ✅ 可视化监控：可集成 Bull Board
-
-**API 接口**：
-+ `/api/monitor/job/list` - 定时任务列表（分页）
-+ `/api/monitor/job/:jobId` - 定时任务详情
-+ `/api/monitor/job` (POST) - 新增定时任务
-+ `/api/monitor/job` (PUT) - 修改定时任务（包括 cron 表达式）
-+ `/api/monitor/job/:jobIds` (DELETE) - 删除定时任务
-+ `/api/monitor/job/changeStatus` - 修改状态（启动/暂停）
-+ `/api/monitor/job/run` - 立即执行任务
-+ `/api/monitor/job/export` - 导出定时任务
-
-**任务处理**：
-+ 队列处理器：`app/queue/ryTask.js`
-+ 任务执行类：`app/service/ryTask.js`
-+ 调用示例：`ryTask.ryNoParams`、`ryTask.ryParams('ry')`
-
-**依赖**：
-+ Redis（必需）：用于 Bull 队列存储
-+ egg-bull：队列管理插件
-
-📖 **详细文档**：
-+ [egg-bull 定时任务完整指南](docs/BULL_SCHEDULE_GUIDE.md)
-+ [egg-bull 快速开始](docs/BULL_SCHEDULE_QUICK_START.md)
-
----
-
-### 系统工具模块
-
-#### 代码生成工具 ✨ NEW
-+ `/api/tool/gen/list` - 代码生成表列表
-+ `/api/tool/gen/db/list` - 数据库表列表
-+ `/api/tool/gen/:tableId` - 表详情
-+ `/api/tool/gen/column/:tableId` - 表字段列表
-+ `/api/tool/gen/importTable` - 导入表
-+ `/api/tool/gen` (PUT) - 修改生成配置
-+ `/api/tool/gen/:tableIds` (DELETE) - 删除表配置
-+ `/api/tool/gen/preview/:tableId` - 预览代码
-+ `/api/tool/gen/download/:tableName` - 下载代码
-+ `/api/tool/gen/genCode/:tableName` - 生成代码（自定义路径）
-+ `/api/tool/gen/synchDb/:tableName` - 同步数据库
-+ `/api/tool/gen/batchGenCode` - 批量生成代码
-
-**注意**: 代码生成为简化实现，建议使用 **ruoyi-eggjs-cli** 命令行工具
-
----
-
-### 个人中心模块
-
-#### 用户个人信息 ✨ NEW
-+ `/api/system/user/profile` (GET) - 个人信息
-+ `/api/system/user/profile` (PUT) - 修改个人信息
-+ `/api/system/user/profile/updatePwd` - 修改密码
-+ `/api/system/user/profile/avatar` - 上传头像
-
----
-
-### 公共接口模块
-
-#### 公共接口 ✨ NEW
-+ `/api/common/upload` - 文件上传
-+ `/api/common/download` - 文件下载
-+ `/api/common/download/resource` - 本地资源下载
-
-
-
----
+基于 Egg.js 框架开发的企业级后台管理系统，100% 实现若依（RuoYi-Vue）系统功能。采用 MyBatis XML 风格编写 SQL，完全复用若依原有的数据库结构和 MyBatis XML 映射文件，实现从 Java 到 Node.js 的无缝迁移。
 
 ## ✨ 特性
 
 ### 核心特性
 
 - 🗄️ **MyBatis XML 编写 SQL** - 业务逻辑与 SQL 分离，支持动态 SQL（[文档](https://github.com/undsky/ruoyi-eggjs-mybatis)）
-- 🔌 **多数据库支持** - 支持 MySQL、SQLite 等多种数据库，支持多数据源配置（[文档](https://github.com/undsky/ruoyi-eggjs-mybatis?tab=readme-ov-file#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84)）
+- 🔌 **多数据库支持** - 支持 MySQL、PostgreSQL、SQLite 等多种数据库，支持多数据源配置（[文档](https://github.com/undsky/ruoyi-eggjs-mybatis?tab=readme-ov-file#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84)）
 - 🤖 **代码自动生成** - 基于 XML Mapper 自动生成 Service 层代码（[文档](https://github.com/undsky/ruoyi-eggjs-cli)）
 - 🌐 **内网穿透** - 内置 FRP 客户端，快速将本地服务暴露到公网（[文档](https://github.com/undsky/ruoyi-eggjs-cli#frp-内网穿透)）
 - 📝 **文件模版** - 使用 VSCode 插件快速生成代码模板（[文档](https://marketplace.visualstudio.com/items?itemName=qiu8310.dot-template-vscode)）
 - 🎯 **路由注解** - 使用装饰器定义路由，简洁优雅（[文档](https://github.com/fyl080801/egg-decorator-router)）
+- ⏰ **定时任务调度** - 基于 egg-bull 实现动态定时任务，支持从数据库读取 cron 表达式、手动执行、失败重试、分布式支持、任务日志记录和可视化监控
 - 🔐 **JWT 认证** - 基于 JWT 的用户认证和权限控制
 - 🔒 **权限控制** - 类似 Spring Boot `@PreAuthorize` 的权限装饰器，支持通配符、AND/OR 逻辑
-- 💡 **IDE 智能提示** ✨ NEW - 完整的 TypeScript 类型定义，支持代码跳转、智能提示和参数提示
-- 🚀 **缓存支持** - 多层级缓存策略（内存、文件、Redis）
-- 🛡️ **限流保护** - API 请求频率限制，防止恶意攻击
+- 💡 **IDE 智能提示**  - 完整的 TypeScript 类型定义，支持代码跳转、智能提示和参数提示
+- 🚀 **缓存支持** - 多层级缓存策略（内存、文件、Redis）（[文档](https://github.com/undsky/ruoyi-eggjs-cache)）
+- 🛡️ **限流保护** - API 请求频率限制，防止恶意攻击（[文档](https://github.com/undsky/ruoyi-eggjs-ratelimiter)）
 - 📦 **文件上传** - 支持多种文件类型上传
 - 🎨 **统一响应格式** - 自动格式化 API 响应
 
@@ -272,23 +56,52 @@
 ruoyi-eggjs/
 ├── app/
 │   ├── controller/          # 控制器
-│   │   └── api/            # API 控制器
-│   │       └── index.js    # 示例控制器
-│   ├── decorator/          # 装饰器
-│   │   └── permission.js   # 权限控制装饰器
-│   ├── middleware/          # 中间件
-│   │   ├── accessControl.js # 访问控制（JWT 验证）
-│   │   ├── permission.js   # 权限验证中间件
-│   │   └── formatBody.js   # 响应格式化
+│   │   ├── system/         # 系统模块控制器
+│   │   │   ├── user.js    # 用户管理
+│   │   │   ├── role.js    # 角色管理
+│   │   │   ├── menu.js    # 菜单管理
+│   │   │   ├── dept.js    # 部门管理
+│   │   │   ├── post.js    # 岗位管理
+│   │   │   ├── dictType.js # 字典类型
+│   │   │   ├── dictData.js # 字典数据
+│   │   │   ├── config.js  # 参数配置
+│   │   │   ├── notice.js  # 通知公告
+│   │   │   ├── profile.js # 个人中心
+│   │   │   └── login.js   # 登录认证
+│   │   ├── monitor/        # 监控模块控制器
+│   │   │   ├── online.js  # 在线用户
+│   │   │   ├── logininfor.js # 登录日志
+│   │   │   ├── operlog.js # 操作日志
+│   │   │   ├── server.js  # 服务监控
+│   │   │   ├── cache.js   # 缓存监控
+│   │   │   ├── job.js     # 定时任务
+│   │   │   └── jobLog.js  # 任务日志
+│   │   ├── tool/           # 工具模块控制器
+│   │   ├── common.js       # 公共接口（上传/下载）
+│   │   └── index.js        # 首页控制器
 │   ├── service/            # 服务层
 │   │   ├── db/            # 数据库服务（自动生成）
 │   │   │   └── mysql/
 │   │   │       └── ruoyi/ # 若依系统表服务
+│   │   ├── system/        # 系统模块服务
+│   │   ├── monitor/       # 监控模块服务
+│   │   ├── tool/          # 工具模块服务
+│   │   ├── ryTask.js      # 定时任务执行类
 │   │   └── upload.js      # 文件上传服务
-│   ├── public/            # 静态资源
-│   │   ├── uploads/       # 上传文件目录
-│   │   └── favicon.ico    # 网站图标
-│   └── schedule/          # 定时任务
+│   ├── decorator/          # 装饰器
+│   │   ├── permission.js  # 权限控制装饰器
+│   │   └── log.js         # 操作日志装饰器
+│   ├── middleware/         # 中间件
+│   │   ├── permission.js  # 权限验证中间件
+│   │   └── formatBody.js  # 响应格式化
+│   ├── queue/             # 队列处理器
+│   │   └── ryTask.js      # 定时任务队列
+│   ├── extend/            # 框架扩展
+│   ├── constant/          # 常量定义
+│   ├── util/              # 工具类
+│   ├── templates/         # 代码生成模板
+│   └── public/            # 静态资源
+│       └── uploads/       # 上传文件目录
 ├── config/
 │   ├── config.default.js  # 默认配置
 │   ├── config.local.js    # 本地开发配置
@@ -299,10 +112,15 @@ ruoyi-eggjs/
 │       └── ruoyi/        # 若依系统表 Mapper
 │           ├── SysUserMapper.xml
 │           ├── SysRoleMapper.xml
+│           ├── SysMenuMapper.xml
 │           └── ...
-├── cache/                # 文件缓存目录
-├── logs/                 # 日志目录
-├── run/                  # 运行时文件
+├── sql/                   # SQL 脚本文件
+├── docs/                  # 文档目录
+├── typings/               # TypeScript 类型定义
+├── cache/                 # 文件缓存目录
+├── logs/                  # 日志目录
+├── run/                   # 运行时文件
+├── app.js                 # 应用启动配置
 ├── package.json
 └── README.md
 ```
@@ -312,8 +130,8 @@ ruoyi-eggjs/
 ### 环境要求
 
 - Node.js >= 20.0.0
-- MySQL >= 5.7 或 MariaDB >= 10.2
-- Redis >= 5.0（可选，用于缓存和限流）
+- MySQL >= 5.7
+- Redis >= 5.0
 
 ### 1. 克隆项目
 
@@ -337,8 +155,7 @@ npm install
 CREATE DATABASE IF NOT EXISTS ruoyi DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci;
 
 -- 导入数据表和数据
--- 请从若依官方获取最新的数据库脚本
--- https://gitee.com/y_project/RuoYi-Vue
+-- SQL 脚本位于项目 sql/ 文件夹下
 ```
 
 ### 4. 配置数据库
@@ -370,15 +187,8 @@ module.exports = appInfo => {
     },
   };
 
-  // 缓存配置（可选，使用 Redis）
+  // 缓存配置（使用 Redis）
   config.cache = {
-    default: 'redis',
-    ttl: 600,
-    fs: {
-      path: path.join(appInfo.baseDir, 'cache'),
-      subdirs: false,
-      zip: false,
-    },
     redis: {
       host: '127.0.0.1',
       port: 6379,
@@ -387,7 +197,7 @@ module.exports = appInfo => {
     },
   };
 
-  // 限流配置（可选，使用 Redis）
+  // 限流配置（使用 Redis）
   config.ratelimiter = {
     points: 100,
     duration: 60,
@@ -726,37 +536,6 @@ pm2 stop ruoyi-eggjs
 pm2 restart ruoyi-eggjs
 ```
 
-### 使用 Docker 部署
-
-```dockerfile
-# Dockerfile
-FROM node:20-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install --production
-
-COPY . .
-
-EXPOSE 7001
-
-CMD ["npm", "start"]
-```
-
-```bash
-# 构建镜像
-docker build -t ruoyi-eggjs .
-
-# 运行容器
-docker run -d \
-  --name ruoyi-eggjs \
-  -p 7001:7001 \
-  -e MYSQL_HOST=your-mysql-host \
-  -e MYSQL_PASSWORD=your-password \
-  ruoyi-eggjs
-```
-
 ### Nginx 反向代理
 
 ```nginx
@@ -773,59 +552,6 @@ server {
     }
 }
 ```
-
-## 📋 功能清单（参考若依）
-
-### ✅ 已实现
-
-#### 基础设施
-- [x] 项目框架搭建
-- [x] MyBatis XML SQL 映射
-- [x] 代码自动生成工具
-- [x] JWT 认证授权
-- [x] 多级缓存支持
-- [x] API 限流保护
-- [x] 文件上传功能
-- [x] 统一响应格式
-
-#### 认证授权模块 (NEW! 🎉)
-- [x] **用户登录**：用户名密码认证、JWT Token 生成
-- [x] **用户登出**：Token 黑名单、在线用户管理
-- [x] **获取用户信息**：用户基本信息、角色、权限查询
-- [x] **获取路由菜单**：基于权限的菜单树生成
-- [x] **用户注册**：用户注册功能（可配置开关）
-- [x] **验证码**：SVG 验证码生成和校验
-
-#### 权限控制模块 (NEW! 🎉 2025-10-27)
-- [x] **@RequiresPermissions**：权限验证装饰器，类似 Spring Boot `@PreAuthorize`
-- [x] **@RequiresRoles**：角色验证装饰器
-- [x] **@RequiresAuth**：组合验证装饰器（角色+权限）
-- [x] **权限缓存**：Redis 缓存用户权限和角色（10分钟）
-- [x] **通配符支持**：支持 `*:*:*`、`system:*:*` 等通配符权限
-- [x] **AND/OR 逻辑**：支持多权限逻辑组合
-
-### ⏳ 待实现（TODO）
-
-> 参照若依（RuoYi-Vue）内置功能
-
-1. [ ] **用户管理**：用户是系统操作者，该功能主要完成系统用户配置
-2. [ ] **部门管理**：配置系统组织机构（公司、部门、小组），树结构展现支持数据权限
-3. [ ] **岗位管理**：配置系统用户所属担任职务
-4. [ ] **菜单管理**：配置系统菜单，操作权限，按钮权限标识等
-5. [ ] **角色管理**：角色菜单权限分配、设置角色按机构进行数据范围权限划分
-6. [ ] **字典管理**：对系统中经常使用的一些较为固定的数据进行维护
-7. [ ] **参数管理**：对系统动态配置常用参数
-8. [ ] **通知公告**：系统通知公告信息发布维护
-9. [ ] **操作日志**：系统正常操作日志记录和查询；系统异常信息日志记录和查询
-10. [ ] **登录日志**：系统登录日志记录查询包含登录异常
-11. [ ] **在线用户**：当前系统中活跃用户状态监控
-12. [ ] **定时任务**：在线（添加、修改、删除）任务调度包含执行结果日志
-13. [ ] **代码生成**：前后端代码的生成（Node.js、Vue、XML、SQL）支持 CRUD 下载
-14. [ ] **系统接口**：根据业务代码自动生成相关的 API 接口文档
-15. [ ] **服务监控**：监视当前系统 CPU、内存、磁盘、堆栈等相关信息
-16. [ ] **缓存监控**：对系统的缓存信息查询，命令统计等
-17. [ ] **在线构建器**：拖动表单元素生成相应的 HTML 代码
-18. [ ] **连接池监视**：监视当前系统数据库连接池状态，可进行分析 SQL 找出系统性能瓶颈
 
 ## 🤝 参与贡献
 

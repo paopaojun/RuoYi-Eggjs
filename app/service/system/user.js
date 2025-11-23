@@ -447,11 +447,9 @@ class UserService extends Service {
       avatar,
     };
 
-    const result = await ctx.helper
+    return await ctx.helper
       .getMasterDB(ctx)
       .sysUserMapper.updateUserAvatar([], user);
-
-    return result && result.length > 0;
   }
 
   /**
