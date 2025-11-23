@@ -5,6 +5,7 @@
  */
 
 const Service = require('egg').Service;
+const { DataScope } = require('../../decorator/dataScope');
 
 class DeptService extends Service {
 
@@ -13,6 +14,7 @@ class DeptService extends Service {
    * @param {object} dept - 查询参数
    * @return {array} 部门列表
    */
+  @DataScope({ deptAlias: 'd' })
   async selectDeptList(dept = {}) {
     const { ctx } = this;
     
@@ -22,9 +24,7 @@ class DeptService extends Service {
       parentId: dept.parentId,
       deptName: dept.deptName,
       status: dept.status,
-      params: {
-        dataScope: '' // TODO: 实现数据权限过滤
-      }
+      params: dept.params || {}
     };
 
     // 查询列表
@@ -274,20 +274,20 @@ class DeptService extends Service {
       return;
     }
 
-    const userId = ctx.state.user.userId;
+    const userId = ctx.state.user?.userId;
     
     // 管理员拥有所有数据权限
     if (ctx.helper.isAdmin(userId)) {
       return;
     }
 
-    // 检查部门是否存在
-    const dept = await this.selectDeptById(deptId);
-    if (!dept) {
+    // 使用带数据权限的查询来验证当前用户是否有权限访问该部门
+    const dept = { deptId };
+    const depts = await this.selectDeptList(dept);
+    
+    if (!depts || depts.length === 0) {
       throw new Error('没有权限访问部门数据！');
     }
-    
-    // TODO: 实现数据权限校验逻辑
   }
 
   /**

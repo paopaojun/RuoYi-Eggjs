@@ -68,10 +68,13 @@ function DataScope(options = {}) {
 async function generateDataScopeSql(ctx, user, deptAlias, userAlias, permission) {
   const { service } = ctx.app;
   
-  // 查询用户的角色列表（包含数据权限范围）
-  const roles = await ctx.service.system.role.selectRolesByUserId(user.userId);
+  // 查询用户拥有的角色权限（包含数据权限范围）
+  const userRoles = await ctx.helper.getDB(ctx).sysRoleMapper.selectRolePermissionByUserId(
+    [],
+    { userId: user.userId }
+  );
   
-  if (!roles || roles.length === 0) {
+  if (!userRoles || userRoles.length === 0) {
     // 没有角色，不查询任何数据
     return ` AND (${deptAlias}.dept_id = 0)`;
   }
@@ -81,14 +84,14 @@ async function generateDataScopeSql(ctx, user, deptAlias, userAlias, permission)
   const scopeCustomIds = [];
   
   // 收集自定义数据权限的角色ID
-  roles.forEach(role => {
+  userRoles.forEach(role => {
     if (role.dataScope === DataScopeType.CUSTOM && role.status === '0') {
       scopeCustomIds.push(role.roleId);
     }
   });
   
   // 遍历角色，生成 SQL 条件
-  for (const role of roles) {
+  for (const role of userRoles) {
     const dataScope = role.dataScope;
     
     // 跳过已处理的数据权限类型或停用的角色

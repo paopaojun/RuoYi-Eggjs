@@ -5,6 +5,7 @@
  */
 
 const Service = require("egg").Service;
+const { DataScope } = require("../../decorator/dataScope");
 
 class RoleService extends Service {
   /**
@@ -48,22 +49,35 @@ class RoleService extends Service {
     return roles;
   }
 
+  /**
+   * 分页查询角色列表（带数据权限过滤）
+   * @param {object} role - 查询参数
+   * @return {object} 分页结果
+   */
+  @DataScope({ deptAlias: "d" })
   async selectRolePage(role = {}) {
     const { ctx } = this;
     const mapper = ctx.helper.getDB(ctx).sysRoleMapper;
 
+    // 确保包含 params 参数
+    const conditions = {
+      ...role,
+      params: role.params || {}
+    };
+
     return await ctx.helper.pageQuery(
-      mapper.selectRoleListMapper([], role),
-      role,
+      mapper.selectRoleListMapper([], conditions),
+      conditions,
       mapper.db()
     );
   }
 
   /**
-   * 查询角色列表
+   * 查询角色列表（带数据权限过滤）
    * @param {object} role - 查询参数
    * @return {array} 角色列表
    */
+  @DataScope({ deptAlias: "d" })
   async selectRoleList(role = {}) {
     const { ctx } = this;
 
@@ -73,10 +87,9 @@ class RoleService extends Service {
       roleName: role.roleName,
       roleKey: role.roleKey,
       status: role.status,
-      params: {
+      params: role.params || {
         beginTime: role.beginTime,
         endTime: role.endTime,
-        dataScope: "", // TODO: 实现数据权限过滤
       },
     };
 

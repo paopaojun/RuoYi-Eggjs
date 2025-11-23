@@ -54,11 +54,11 @@ class UserService extends Service {
       phonenumber: params.phonenumber,
       status: params.status,
       deptId: params.deptId,
-      params: {
-        beginTime: params.beginTime,
-        endTime: params.endTime,
-        dataScope: "", // 由 @DataScope 装饰器自动填充
-      },
+      // params: {
+      //   beginTime: params.beginTime,
+      //   endTime: params.endTime,
+      //   dataScope: "", // 由 @DataScope 装饰器自动填充
+      // },
     };
 
     // 查询列表
@@ -604,6 +604,7 @@ class UserService extends Service {
    * @param {object} params - 查询参数
    * @return {object} 分页结果
    */
+  @DataScope({ deptAlias: "d", userAlias: "u" })
   async selectAllocatedList(params) {
     const { ctx } = this;
 
@@ -621,6 +622,7 @@ class UserService extends Service {
    * @param {object} params - 查询参数
    * @return {array} 用户列表
    */
+  @DataScope({ deptAlias: "d", userAlias: "u" })
   async selectUnallocatedList(params) {
     const { ctx } = this;
 
