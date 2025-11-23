@@ -98,8 +98,7 @@ module.exports = app => {
         // 过滤掉管理员角色（非管理员用户不能分配管理员角色）
         const isAdmin = ctx.helper.isAdmin(parseInt(userId));
         const filteredRoles = isAdmin ? roles : roles.filter(r => !ctx.helper.isAdmin(r.roleId));
-        user.roles = filteredRoles || [];
-        const roleIds = user.roles.map(r => r.roleId);
+        const roleIds = user.roleIds;
         
         ctx.body = {
           code: 200,

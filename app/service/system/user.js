@@ -11,18 +11,29 @@ class UserService extends Service {
   /**
    * 查询用户列表（分页，带数据权限过滤）
    * @param {object} params - 查询参数
-   * @return {object} 分页结果
+   * @return {object} 分页结果（包含部门信息）
    */
   @DataScope({ deptAlias: "d", userAlias: "u" })
   async selectUserPage(params = {}) {
     const { ctx } = this;
     const mapper = ctx.helper.getDB(ctx).sysUserMapper;
 
-    return await ctx.helper.pageQuery(
+    const result = await ctx.helper.pageQuery(
       mapper.selectUserListMapper([], params),
       params,
       mapper.db()
     );
+
+    // 为每个用户添加部门信息
+    if (result.rows && result.rows.length > 0) {
+      for (const user of result.rows) {
+        if (user.deptId) {
+          user.dept = await this.selectDeptByDeptId(user.deptId);
+        }
+      }
+    }
+
+    return result;
   }
 
   
@@ -54,21 +65,100 @@ class UserService extends Service {
     const users = await ctx.helper
       .getDB(ctx)
       .sysUserMapper.selectUserList([], conditions);
+    
+    // 为每个用户添加部门信息
+    if (users && users.length > 0) {
+      for (const user of users) {
+        if (user.deptId) {
+          user.dept = await this.selectDeptByDeptId(user.deptId);
+        }
+      }
+    }
 
     return users || [];
   }
 
   /**
-   * 根据用户ID查询用户
+   * 根据用户ID查询用户（包含部门和角色信息）
    * @param {number} userId - 用户ID
-   * @return {object} 用户信息
+   * @return {object} 用户信息（包含 dept、roles 和 roleIds）
    */
   async selectUserById(userId) {
     const { ctx } = this;
 
-    return await ctx.helper.getDB(ctx).sysUserMapper.selectUserById([], {
+    let user = await ctx.helper.getDB(ctx).sysUserMapper.selectUserById([], {
       userId,
     });
+    
+   user = await this.selectUserWithDeptAndRoles(user);
+    
+    return user;
+  }
+
+  /**
+   * 根据用户名查询角色列表
+   * @param {string} userName - 用户名
+   * @return {object} { roles: 角色列表, roleIds: 角色ID列表 }
+   */
+  async selectRolesByUserName(userName) {
+    const { ctx } = this;
+    
+    if (!userName) {
+      return { roles: [], roleIds: [] };
+    }
+    
+    const roles = await ctx.helper.getDB(ctx).sysRoleMapper.selectRolesByUserName([], {
+      userName
+    }) || [];
+    
+    // 提取角色ID列表
+    const roleIds = roles.map(role => role.roleId);
+    
+    return { roles, roleIds };
+  }
+
+  /**
+   * 根据部门ID查询部门信息
+   * @param {number} deptId - 部门ID
+   * @return {object} 部门信息
+   */
+  async selectDeptByDeptId(deptId) {
+    const { ctx } = this;
+    
+    if (!deptId) {
+      return null;
+    }
+    
+    return await ctx.helper.getDB(ctx).sysDeptMapper.selectDeptById([], {
+      deptId
+    });
+  }
+
+  /**
+   * 根据用户对象查询用户详情（包含部门和角色列表）
+   * @param {object} user - 用户对象（必须包含 userName 和 deptId）
+   * @return {object} 用户详情（包含 dept、roles 和 roleIds 字段）
+   */
+  async selectUserWithDeptAndRoles(user) {
+    const { ctx } = this;
+    
+    if (!user || !user.userName) {
+      return null;
+    }
+    
+    // 1. 查询角色列表和角色ID
+    const { roles, roleIds } = await this.selectRolesByUserName(user.userName);
+    
+    // 2. 查询部门信息
+    const dept = await this.selectDeptByDeptId(user.deptId);
+    
+    // 3. 组装结果
+    return {
+      ...user,
+      dept,
+      roles,
+      roleIds
+    };
   }
 
   /**
@@ -367,6 +457,15 @@ class UserService extends Service {
 
     for (const user of userList) {
       try {
+        
+        // 根据部门名称查询部门ID
+        if (user.deptName) {
+          const dept = await ctx.service.system.dept.selectDeptByName(user.deptName);
+          if (dept) {
+            user.deptId = dept.deptId;
+          }
+        }
+        
         // 校验用户名是否存�?
         const existUser = await this.selectUserByUserName(user.userName);
 

@@ -34,6 +34,30 @@ class DeptService extends Service {
   }
 
   /**
+   * 根据部门名称查询部门
+   * @param {string} deptName - 部门名称
+   * @return {object} 部门信息
+   */
+  async selectDeptByName(deptName) {
+    const { ctx } = this;
+    
+    if (!deptName) {
+      return null;
+    }
+    
+    // 精确查询部门名称
+    const depts = await this.selectDeptList({ deptName });
+    
+    if (depts && depts.length > 0) {
+      // 精确匹配部门名称
+      const exactMatch = depts.find(dept => dept.deptName === deptName);
+      return exactMatch || depts[0];
+    }
+    
+    return null;
+  }
+
+  /**
    * 查询部门树结构
    * @param {object} dept - 查询参数
    * @return {array} 部门树
