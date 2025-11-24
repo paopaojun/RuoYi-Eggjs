@@ -34,10 +34,10 @@ module.exports = (appInfo) => {
     // 启用驼峰命名转换：数据库字段 user_name -> userName
     camelCase: true,
     clients: {
-      common: {
+      ruoyi: {
         host: "127.0.0.1",
-        user: "ruoyi",
-        password: "eZkBTE7HwtKmNnmJ",
+        user: "root",
+        password: "jyx123",
         database: "ruoyi",
       },
     },
@@ -47,7 +47,7 @@ module.exports = (appInfo) => {
     port: 6379,
     host: "127.0.0.1",
     password: "",
-    db: 1,
+    db: 7,
   };
 
   config.cache = { redis };

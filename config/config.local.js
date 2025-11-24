@@ -35,7 +35,7 @@ module.exports = (appInfo) => {
     port: 6379,
     host: "127.0.0.1",
     password: "",
-    db: 5,
+    db: 6,
   };
 
   config.cache = { redis };
