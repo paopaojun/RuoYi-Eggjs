@@ -374,6 +374,42 @@ class VelocityUtils {
       throw new Error(`模板渲染失败: ${error.message}`);
     }
   }
+
+  /**
+   * 移除多余的空行
+   * @param {string} content - 内容
+   * @return {string} 处理后的内容
+   */
+  static removeExtraBlankLines(content) {
+    if (!content) {
+      return content;
+    }
+
+    // 按行处理，彻底清理空行
+    const lines = content.split('\n');
+    const result = [];
+    let emptyLineCount = 0;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      // 检查是否为空行（只包含空白字符）
+      const trimmedLine = line.trim();
+      
+      if (trimmedLine === '') {
+        emptyLineCount++;
+        // 最多保留一个连续空行
+        if (emptyLineCount <= 1) {
+          result.push('');
+        }
+      } else {
+        emptyLineCount = 0;
+        // 移除行尾空白字符，但保留行首缩进
+        result.push(line.replace(/[ \t]+$/, ''));
+      }
+    }
+    
+    return result.join('\n');
+  }
 }
 
 module.exports = VelocityUtils;

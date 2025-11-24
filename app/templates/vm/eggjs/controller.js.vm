@@ -7,15 +7,17 @@
 const Controller = require('egg').Controller;
 const { Route, HttpGet, HttpPost, HttpPut, HttpDelete } = require('egg-decorator-router');
 const { RequiresPermissions } = require('../../decorator/permission');
+const { Log, BusinessType } = require('../../decorator/log');
+const ExcelUtil = require('../../extend/excel');
 
 module.exports = app => {
 
-  @Route('/api/${moduleName}/${businessName}')
+  @Route('/${moduleName}/${businessName}')
   class ${ClassName}Controller extends Controller {
 
     /**
      * 查询${functionName}列表
-     * GET /api/${moduleName}/${businessName}/list
+     * GET /${moduleName}/${businessName}/list
      * 权限：${permissionPrefix}:list
      */
     @RequiresPermissions('${permissionPrefix}:list')
@@ -45,7 +47,7 @@ module.exports = app => {
 
     /**
      * 查询${functionName}详情
-     * GET /api/${moduleName}/${businessName}/:${pkColumn.javaField}
+     * GET /${moduleName}/${businessName}/:${pkColumn.javaField}
      * 权限：${permissionPrefix}:query
      */
     @RequiresPermissions('${permissionPrefix}:query')
@@ -61,7 +63,7 @@ module.exports = app => {
 
     /**
      * 新增${functionName}
-     * POST /api/${moduleName}/${businessName}
+     * POST /${moduleName}/${businessName}
      * 权限：${permissionPrefix}:add
      */
     @RequiresPermissions('${permissionPrefix}:add')
@@ -80,7 +82,7 @@ module.exports = app => {
 
     /**
      * 修改${functionName}
-     * PUT /api/${moduleName}/${businessName}
+     * PUT /${moduleName}/${businessName}
      * 权限：${permissionPrefix}:edit
      */
     @RequiresPermissions('${permissionPrefix}:edit')
@@ -97,9 +99,11 @@ module.exports = app => {
       ctx.body = result;
     }
 
+    
+
     /**
      * 删除${functionName}
-     * DELETE /api/${moduleName}/${businessName}/:${pkColumn.javaField}s
+     * DELETE /${moduleName}/${businessName}/:${pkColumn.javaField}s
      * 权限：${permissionPrefix}:remove
      */
     @RequiresPermissions('${permissionPrefix}:remove')
@@ -108,10 +112,54 @@ module.exports = app => {
       const { ctx } = this;
       const { ${pkColumn.javaField}s } = ctx.params;
       
-      const ids = ${pkColumn.javaField}s.split(',');
-      const result = await ctx.service.${moduleName}.${businessName}.delete${ClassName}By${pkColumn.capJavaField}s(ids);
+      const ${businessName}Ids = ${pkColumn.javaField}s.split(',');
+      const result = await ctx.service.${moduleName}.${businessName}.delete${ClassName}By${pkColumn.capJavaField}s(${businessName}Ids);
       
       ctx.body = result;
+    }
+
+    /**
+     * 导出${functionName}
+     * POST /${moduleName}/${businessName}/export
+     * 权限：${permissionPrefix}:export
+     */
+    @Log({ title: '${functionName}', businessType: BusinessType.EXPORT })
+    @RequiresPermissions('${permissionPrefix}:export')
+    @HttpPost('/export')
+    async export() {
+      const { ctx, service } = this;
+
+      try {
+        const params = ctx.request.body;
+
+        // 查询${functionName}列表
+        const result = await service.${moduleName}.${businessName}.select${ClassName}List(params);
+        const list = result.rows || [];
+
+        // 定义 Excel 列配置
+        const columns = [
+#foreach($column in $columns)
+#if($column.list)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+          { header: '${comment}', key: '${column.javaField}', width: 20 },
+#end
+#end
+        ];
+
+        // 导出 Excel
+        ExcelUtil.exportExcel(ctx, list, columns, '${functionName}数据');
+      } catch (err) {
+        ctx.logger.error('导出${functionName}失败:', err);
+        ctx.body = {
+          code: 500,
+          msg: err.message || '导出${functionName}失败'
+        };
+      }
     }
   }
 

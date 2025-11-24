@@ -32,9 +32,7 @@ class ${ClassName}Service extends Service {
   async select${ClassName}By${pkColumn.capJavaField}(${pkColumn.javaField}) {
     const { ctx } = this;
     
-    const result = await ctx.helper.getDB(ctx).${className}Mapper.select${ClassName}By${pkColumn.capJavaField}([${pkColumn.javaField}]);
-    
-    return result[0] || null;
+    return await ctx.helper.getDB(ctx).${className}Mapper.select${ClassName}By${pkColumn.capJavaField}([],{${pkColumn.javaField}});
   }
 
   /**
@@ -45,7 +43,7 @@ class ${ClassName}Service extends Service {
   async insert${ClassName}(data) {
     const { ctx } = this;
     
-    const result = await ctx.helper.getMasterDB(ctx).${className}Mapper.insert${ClassName}([data]);
+    const result = await ctx.helper.getMasterDB(ctx).${className}Mapper.insert${ClassName}([],data);
     
     return { code: 200, msg: '新增成功', data: result };
   }
@@ -58,7 +56,7 @@ class ${ClassName}Service extends Service {
   async update${ClassName}(data) {
     const { ctx } = this;
     
-    const result = await ctx.helper.getMasterDB(ctx).${className}Mapper.update${ClassName}([data]);
+    const result = await ctx.helper.getMasterDB(ctx).${className}Mapper.update${ClassName}([],data);
     
     return { code: 200, msg: '修改成功', data: result };
   }
@@ -71,7 +69,7 @@ class ${ClassName}Service extends Service {
   async delete${ClassName}By${pkColumn.capJavaField}s(${pkColumn.javaField}s) {
     const { ctx } = this;
     
-    const result = await ctx.helper.getMasterDB(ctx).${className}Mapper.delete${ClassName}By${pkColumn.capJavaField}s([${pkColumn.javaField}s]);
+    const result = await ctx.helper.getMasterDB(ctx).${className}Mapper.delete${ClassName}By${pkColumn.capJavaField}s([],{array:${pkColumn.javaField}s});
     
     return { code: 200, msg: '删除成功', data: result };
   }

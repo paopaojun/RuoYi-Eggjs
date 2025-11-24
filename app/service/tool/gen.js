@@ -212,7 +212,7 @@ class GenService extends Service {
           if (key.startsWith('is') && key.length > 2) {
             // 生成不带 is 的属性名（首字母小写）
             const newKey = key.charAt(2).toLowerCase() + key.slice(3);
-            column[newKey] = column[key];
+            column[newKey] = column[key] === '1';
           }
         });
       });
@@ -401,7 +401,9 @@ class GenService extends Service {
         
         if (await fs.pathExists(templatePath)) {
           const templateContent = await fs.readFile(templatePath, 'utf-8');
-          const code = VelocityUtils.render(templateContent, context);
+          let code = VelocityUtils.render(templateContent, context);
+          // 移除多余的空行
+          code = VelocityUtils.removeExtraBlankLines(code);
           dataMap[template] = code;
         } else {
           ctx.logger.warn(`模板文件不存在: ${templatePath}`);
@@ -661,7 +663,9 @@ class GenService extends Service {
       
       if (await fs.pathExists(templatePath)) {
         const templateContent = await fs.readFile(templatePath, 'utf-8');
-        const code = VelocityUtils.render(templateContent, context);
+        let code = VelocityUtils.render(templateContent, context);
+        // 移除多余的空行
+        code = VelocityUtils.removeExtraBlankLines(code);
         const fileName = VelocityUtils.getFileName(template, table);
         codeMap[fileName] = code;
       }
