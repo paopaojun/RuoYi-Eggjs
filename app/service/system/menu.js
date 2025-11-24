@@ -360,7 +360,7 @@ class MenuService extends Service {
       .getDB(ctx)
       .sysRoleMenuMapper.checkMenuExistRole([], { menuId });
 
-    return result && result.length > 0;
+    return result && result["count(1)"] > 0;
   }
 
   /**

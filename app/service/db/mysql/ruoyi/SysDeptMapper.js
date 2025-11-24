@@ -70,7 +70,7 @@ class SysDeptMapperService extends Service {
     }
 
     async selectChildrenDeptById(values, params) {
-        return await this.db().select(this.selectChildrenDeptByIdMapper(values, params));
+        return await this.db().selects(this.selectChildrenDeptByIdMapper(values, params));
     }
 
     selectNormalChildrenDeptByIdMapper(values, params) {

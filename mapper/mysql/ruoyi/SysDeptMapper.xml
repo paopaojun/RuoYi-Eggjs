@@ -74,9 +74,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where del_flag = '0' and parent_id = #{deptId} limit 1
 	</select>
 	
-	<select id="selectChildrenDeptById" parameterType="Long" resultMap="SysDeptResult">
+	<selects id="selectChildrenDeptById" parameterType="Long" resultMap="SysDeptResult">
 		select * from sys_dept where find_in_set(#{deptId}, ancestors)
-	</select>
+	</selects>
 	
 	<select id="selectNormalChildrenDeptById" parameterType="Long" resultType="int">
 		select count(*) from sys_dept where status = 0 and del_flag = '0' and find_in_set(#{deptId}, ancestors)

@@ -4,32 +4,33 @@
  * @Date: 2025-10-24
  */
 
-const Service = require('egg').Service;
-const { DataScope } = require('../../decorator/dataScope');
+const Service = require("egg").Service;
+const { DataScope } = require("../../decorator/dataScope");
 
 class DeptService extends Service {
-
   /**
    * 查询部门列表
    * @param {object} dept - 查询参数
    * @return {array} 部门列表
    */
-  @DataScope({ deptAlias: 'd' })
+  @DataScope({ deptAlias: "d" })
   async selectDeptList(dept = {}) {
     const { ctx } = this;
-    
+
     // 查询条件
     const conditions = {
       deptId: dept.deptId,
       parentId: dept.parentId,
       deptName: dept.deptName,
       status: dept.status,
-      params: dept.params || {}
+      params: dept.params || {},
     };
 
     // 查询列表
-    const depts = await ctx.helper.getDB(ctx).sysDeptMapper.selectDeptList([],conditions);
-    
+    const depts = await ctx.helper
+      .getDB(ctx)
+      .sysDeptMapper.selectDeptList([], conditions);
+
     return depts || [];
   }
 
@@ -40,20 +41,20 @@ class DeptService extends Service {
    */
   async selectDeptByName(deptName) {
     const { ctx } = this;
-    
+
     if (!deptName) {
       return null;
     }
-    
+
     // 精确查询部门名称
     const depts = await this.selectDeptList({ deptName });
-    
+
     if (depts && depts.length > 0) {
       // 精确匹配部门名称
-      const exactMatch = depts.find(dept => dept.deptName === deptName);
+      const exactMatch = depts.find((dept) => dept.deptName === deptName);
       return exactMatch || depts[0];
     }
-    
+
     return null;
   }
 
@@ -64,9 +65,9 @@ class DeptService extends Service {
    */
   async selectDeptTreeList(dept = {}) {
     const { ctx } = this;
-    
+
     const list = await this.selectDeptList(dept);
-    
+
     return this.buildDeptTreeSelect(list);
   }
 
@@ -77,19 +78,19 @@ class DeptService extends Service {
    */
   buildDeptTree(depts) {
     const { ctx } = this;
-    
+
     // 找出所有部门ID
-    const deptIds = depts.map(d => d.deptId);
-    
+    const deptIds = depts.map((d) => d.deptId);
+
     // 找出顶级节点（父节点不在列表中的）
     const tree = [];
-    depts.forEach(dept => {
+    depts.forEach((dept) => {
       if (!deptIds.includes(dept.parentId)) {
         this.recursionFn(depts, dept);
         tree.push(dept);
       }
     });
-    
+
     return tree.length > 0 ? tree : depts;
   }
 
@@ -102,7 +103,7 @@ class DeptService extends Service {
     // 得到子节点列表
     const childList = this.getChildList(depts, dept);
     dept.children = childList;
-    
+
     for (const child of childList) {
       // 判断是否有子节点
       if (this.hasChild(depts, child)) {
@@ -154,20 +155,20 @@ class DeptService extends Service {
    */
   convertToTreeSelect(depts) {
     const treeSelect = [];
-    
-    depts.forEach(dept => {
+
+    depts.forEach((dept) => {
       const node = {
         id: dept.deptId,
-        label: dept.deptName
+        label: dept.deptName,
       };
-      
+
       if (dept.children && dept.children.length > 0) {
         node.children = this.convertToTreeSelect(dept.children);
       }
-      
+
       treeSelect.push(node);
     });
-    
+
     return treeSelect;
   }
 
@@ -178,8 +179,10 @@ class DeptService extends Service {
    */
   async selectDeptById(deptId) {
     const { ctx } = this;
-    
-    return await ctx.helper.getDB(ctx).sysDeptMapper.selectDeptById([], {deptId});
+
+    return await ctx.helper
+      .getDB(ctx)
+      .sysDeptMapper.selectDeptById([], { deptId });
   }
 
   /**
@@ -189,16 +192,15 @@ class DeptService extends Service {
    */
   async selectDeptListByRoleId(roleId) {
     const { ctx } = this;
-    
+
     // 查询角色信息
     const role = await ctx.service.system.role.selectRoleById(roleId);
     const deptCheckStrictly = role && role.deptCheckStrictly;
-    
+
     // 使用 Mapper 方法查询
-    return await ctx.helper.getDB(ctx).sysDeptMapper.selectDeptListByRoleId(
-      [],
-      { roleId, deptCheckStrictly }
-    );
+    return await ctx.helper
+      .getDB(ctx)
+      .sysDeptMapper.selectDeptListByRoleId([], { roleId, deptCheckStrictly });
   }
 
   /**
@@ -208,19 +210,21 @@ class DeptService extends Service {
    */
   async checkDeptNameUnique(dept) {
     const { ctx } = this;
-    
+
     const deptId = dept.deptId || -1;
     const conditions = {
       deptName: dept.deptName,
-      parentId: dept.parentId
+      parentId: dept.parentId,
     };
-    
-    const depts = await ctx.helper.getDB(ctx).sysDeptMapper.checkDeptNameUnique([], conditions);
-    
+
+    const depts = await ctx.helper
+      .getDB(ctx)
+      .sysDeptMapper.checkDeptNameUnique([], conditions);
+
     if (depts && depts.length > 0 && depts[0].deptId !== deptId) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -231,9 +235,11 @@ class DeptService extends Service {
    */
   async hasChildByDeptId(deptId) {
     const { ctx } = this;
-    
-    const result = await ctx.helper.getDB(ctx).sysDeptMapper.hasChildByDeptId([], {deptId});
-    
+
+    const result = await ctx.helper
+      .getDB(ctx)
+      .sysDeptMapper.hasChildByDeptId([], { deptId });
+
     return result && result["count(1)"] > 0;
   }
 
@@ -244,9 +250,11 @@ class DeptService extends Service {
    */
   async checkDeptExistUser(deptId) {
     const { ctx } = this;
-    
-    const result = await ctx.helper.getDB(ctx).sysDeptMapper.checkDeptExistUser([], {deptId});
-    
+
+    const result = await ctx.helper
+      .getDB(ctx)
+      .sysDeptMapper.checkDeptExistUser([], { deptId });
+
     return result && result["count(1)"] > 0;
   }
 
@@ -257,10 +265,12 @@ class DeptService extends Service {
    */
   async selectNormalChildrenDeptById(deptId) {
     const { ctx } = this;
-    
-    const result = await ctx.helper.getDB(ctx).sysDeptMapper.selectNormalChildrenDeptById([], {deptId});
-    
-    return result && result.length > 0 ? result[0].count : 0;
+
+    const result = await ctx.helper
+      .getDB(ctx)
+      .sysDeptMapper.selectNormalChildrenDeptById([], { deptId });
+
+    return result ? result["count(*)"] : 0;
   }
 
   /**
@@ -269,13 +279,13 @@ class DeptService extends Service {
    */
   async checkDeptDataScope(deptId) {
     const { ctx } = this;
-    
+
     if (!deptId) {
       return;
     }
 
     const userId = ctx.state.user && ctx.state.user.userId;
-    
+
     // 管理员拥有所有数据权限
     if (ctx.helper.isAdmin(userId)) {
       return;
@@ -284,9 +294,9 @@ class DeptService extends Service {
     // 使用带数据权限的查询来验证当前用户是否有权限访问该部门
     const dept = { deptId };
     const depts = await this.selectDeptList(dept);
-    
+
     if (!depts || depts.length === 0) {
-      throw new Error('没有权限访问部门数据！');
+      throw new Error("没有权限访问部门数据！");
     }
   }
 
@@ -297,24 +307,28 @@ class DeptService extends Service {
    */
   async insertDept(dept) {
     const { ctx } = this;
-    
+
     // 查询父部门信息
     const parentDept = await this.selectDeptById(dept.parentId);
-    
+
     // 如果父节点不为正常状态,则不允许新增子节点
-    if (parentDept && parentDept.status !== '0') {
-      throw new Error('部门停用，不允许新增');
+    if (parentDept && parentDept.status !== "0") {
+      throw new Error("部门停用，不允许新增");
     }
-    
+
     // 设置祖级列表
-    dept.ancestors = parentDept ? `${parentDept.ancestors},${dept.parentId}` : '0';
-    
+    dept.ancestors = parentDept
+      ? `${parentDept.ancestors},${dept.parentId}`
+      : "0";
+
     // 设置创建信息
     dept.createBy = ctx.state.user.userName;
-    
+
     // 插入部门
-    const result = await ctx.helper.getMasterDB(ctx).sysDeptMapper.insertDept([], dept);
-    
+    const result = await ctx.helper
+      .getMasterDB(ctx)
+      .sysDeptMapper.insertDept([], dept);
+
     return result;
   }
 
@@ -325,35 +339,37 @@ class DeptService extends Service {
    */
   async updateDept(dept) {
     const { ctx } = this;
-    
+
     // 查询新父部门信息
     const newParentDept = await this.selectDeptById(dept.parentId);
-    
+
     // 查询旧部门信息
     const oldDept = await this.selectDeptById(dept.deptId);
-    
+
     if (newParentDept && oldDept) {
       // 计算新的祖级列表
       const newAncestors = `${newParentDept.ancestors},${newParentDept.deptId}`;
       const oldAncestors = oldDept.ancestors;
-      
+
       dept.ancestors = newAncestors;
-      
+
       // 更新子部门的祖级列表
       await this.updateDeptChildren(dept.deptId, newAncestors, oldAncestors);
     }
-    
+
     // 设置更新信息
     dept.updateBy = ctx.state.user.userName;
-    
+
     // 更新部门
-    const result = await ctx.helper.getMasterDB(ctx).sysDeptMapper.updateDept([], dept);
-    
+    const result = await ctx.helper
+      .getMasterDB(ctx)
+      .sysDeptMapper.updateDept([], dept);
+
     // 如果该部门是启用状态，则启用该部门的所有上级部门
-    if (dept.status === '0' && dept.ancestors && dept.ancestors !== '0') {
+    if (dept.status === "0" && dept.ancestors && dept.ancestors !== "0") {
       await this.updateParentDeptStatusNormal(dept);
     }
-    
+
     return result;
   }
 
@@ -369,7 +385,7 @@ class DeptService extends Service {
     // 查询所有子部门
     const children = await ctx.helper
       .getDB(ctx)
-      .sysDeptMapper.selectChildrenDeptById([deptId]);
+      .sysDeptMapper.selectChildrenDeptById([], { deptId });
 
     // 更新子部门的祖级列表
     for (const child of children) {
@@ -390,16 +406,21 @@ class DeptService extends Service {
    */
   async updateParentDeptStatusNormal(dept) {
     const { ctx } = this;
-    
+
     // 获取所有上级部门ID
-    const ancestorIds = dept.ancestors.split(',').map(id => parseInt(id)).filter(id => id > 0);
-    
+    const ancestorIds = dept.ancestors
+      .split(",")
+      .map((id) => parseInt(id))
+      .filter((id) => id > 0);
+
     if (ancestorIds.length === 0) {
       return;
     }
-    
+
     // 批量更新状态
-    await ctx.helper.getMasterDB(ctx).sysDeptMapper.updateDeptStatusNormal([], {ancestorIds});
+    await ctx.helper
+      .getMasterDB(ctx)
+      .sysDeptMapper.updateDeptStatusNormal([], { array: ancestorIds });
   }
 
   /**
@@ -409,14 +430,14 @@ class DeptService extends Service {
    */
   async deleteDeptById(deptId) {
     const { ctx } = this;
-    
+
     // 删除部门（软删除）
-    const result = await ctx.helper.getMasterDB(ctx).sysDeptMapper.deleteDeptById([], {deptId});
-    
+    const result = await ctx.helper
+      .getMasterDB(ctx)
+      .sysDeptMapper.deleteDeptById([], { deptId });
+
     return result;
   }
 }
 
 module.exports = DeptService;
-
-
