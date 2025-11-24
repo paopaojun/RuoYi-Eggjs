@@ -11,6 +11,7 @@ const archiver = require('archiver');
 const GenUtils = require('../../util/genUtils');
 const VelocityUtils = require('../../util/velocityUtils');
 const GenConstants = require('../../constant/genConstants');
+const SqlUtils = require('../../util/sqlUtils');
 
 class GenService extends Service {
   async selectGenTablePage(params = {}) {
@@ -167,8 +168,8 @@ class GenService extends Service {
     try {
       const result = await ctx.helper.getDB(ctx).genTableMapper.selectGenTableByName([],{tableName});
       
-      if (result != null) {
-        const genTable = result;
+      if (result != null && result.length > 0) {
+        const genTable = result[0];
         await this.setTableFromOptions(genTable);
         // 查询列信息
         genTable.columns = await this.selectGenTableColumnListByTableId(genTable.tableId);
@@ -768,6 +769,56 @@ class GenService extends Service {
     }
     
     return path.join(genPath, fileName);
+  }
+
+  /**
+   * 创建表结构
+   * @param {string} sql - SQL 语句
+   * @return {object} { success: boolean, tableNames: array, message: string }
+   */
+  async createTable(sql) {
+    const { ctx } = this;
+    
+    try {
+      // 1. 过滤 SQL 关键字
+      SqlUtils.filterKeyword(sql);
+      
+      // 2. 分割 SQL 语句
+      const statements = SqlUtils.splitStatements(sql);
+      const tableNames = [];
+      
+      // 3. 执行每个 CREATE TABLE 语句
+      for (const statement of statements) {
+        if (SqlUtils.isCreateTableStatement(statement)) {
+          // 执行 SQL
+          await ctx.helper.getMasterDB(ctx).genTableMapper.db().run(statement);
+          
+          // 提取表名
+          const names = SqlUtils.parseCreateTableNames(statement);
+          tableNames.push(...names);
+        }
+      }
+      
+      if (tableNames.length === 0) {
+        throw new Error('未找到有效的 CREATE TABLE 语句');
+      }
+      
+      // 4. 查询新创建的表信息
+      const tableList = await this.selectDbTableListByNames(tableNames);
+      
+      // 5. 导入表结构
+      const operName = ctx.state.user.userName || 'admin';
+      await this.importGenTable(tableNames);
+      
+      return {
+        success: true,
+        tableNames,
+        message: `成功创建 ${tableNames.length} 个表`
+      };
+    } catch (err) {
+      ctx.logger.error('创建表结构失败:', err);
+      throw new Error('创建表结构异常：' + err.message);
+    }
   }
 }
 

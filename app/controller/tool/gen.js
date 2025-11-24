@@ -174,6 +174,47 @@ module.exports = app => {
     }
 
     /**
+     * 创建表结构（保存）
+     * POST /api/tool/gen/createTable
+     * 权限：需要 admin 角色
+     * 参照：GenController.createTableSave
+     */
+    @RequiresPermissions('tool:gen:import')
+    @HttpPost('/createTable')
+    async createTable() {
+      const { ctx, service } = this;
+      
+      try {
+        const { sql } = ctx.query;
+        
+        if (!sql) {
+          ctx.body = {
+            code: 500,
+            msg: 'SQL 语句不能为空'
+          };
+          return;
+        }
+        
+        // 创建表结构
+        const result = await service.tool.gen.createTable(sql);
+        
+        ctx.body = {
+          code: 200,
+          msg: result.message,
+          data: {
+            tableNames: result.tableNames
+          }
+        };
+      } catch (err) {
+        ctx.logger.error('创建表结构失败:', err);
+        ctx.body = {
+          code: 500,
+          msg: err.message || '创建表结构异常'
+        };
+      }
+    }
+
+    /**
      * 修改代码生成配置
      * PUT /api/tool/gen
      * 权限：tool:gen:edit
@@ -233,6 +274,8 @@ module.exports = app => {
         };
       }
     }
+
+    
 
     /**
      * 预览代码
