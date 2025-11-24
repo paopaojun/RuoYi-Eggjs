@@ -23,6 +23,7 @@ import ExportSystemDictType = require('../../../app/service/system/dictType');
 import ExportSystemLogin = require('../../../app/service/system/login');
 import ExportSystemMenu = require('../../../app/service/system/menu');
 import ExportSystemNotice = require('../../../app/service/system/notice');
+import ExportSystemPassword = require('../../../app/service/system/password');
 import ExportSystemPost = require('../../../app/service/system/post');
 import ExportSystemRole = require('../../../app/service/system/role');
 import ExportSystemUser = require('../../../app/service/system/user');
@@ -68,6 +69,7 @@ declare module 'egg' {
       login: AutoInstanceType<typeof ExportSystemLogin>;
       menu: AutoInstanceType<typeof ExportSystemMenu>;
       notice: AutoInstanceType<typeof ExportSystemNotice>;
+      password: AutoInstanceType<typeof ExportSystemPassword>;
       post: AutoInstanceType<typeof ExportSystemPost>;
       role: AutoInstanceType<typeof ExportSystemRole>;
       user: AutoInstanceType<typeof ExportSystemUser>;

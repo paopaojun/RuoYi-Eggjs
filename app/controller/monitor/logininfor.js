@@ -105,10 +105,12 @@ module.exports = app => {
     }
 
     /**
-     * 解锁用户
+     * 解锁用户（清除密码错误次数缓存）
      * GET /api/monitor/logininfor/unlock/:userName
      * 权限：monitor:logininfor:unlock
+     * 参照：SysLogininforController.unlock
      */
+    @Log({ title: '账户解锁', businessType: BusinessType.OTHER })
     @RequiresPermissions('monitor:logininfor:unlock')
     @HttpGet('/unlock/:userName')
     async unlock() {
@@ -117,8 +119,8 @@ module.exports = app => {
       try {
         const { userName } = ctx.params;
         
-        // 解锁用户
-        await service.monitor.logininfor.unlockUser(userName);
+        // 解锁用户（调用密码服务清除登录记录缓存）
+        await service.system.password.clearLoginRecordCache(userName);
         
         ctx.body = {
           code: 200,

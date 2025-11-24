@@ -132,8 +132,8 @@ class GenService extends Service {
     try {
       const result = await ctx.helper.getDB(ctx).genTableMapper.selectGenTableById([],{tableId});
       
-      if (result != null) {
-        const genTable = result;
+      if (result != null && result.length > 0) {
+        const genTable = result[0];
         await this.setTableFromOptions(genTable);
         // 查询列信息
         genTable.columns = await this.selectGenTableColumnListByTableId(tableId);

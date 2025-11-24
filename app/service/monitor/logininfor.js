@@ -6,6 +6,7 @@
 
 const Service = require('egg').Service;
 const dayjs = require('dayjs');
+const { CacheConstants } = require('../../constant');
 
 class LogininforService extends Service {
   async selectLogininforPage(params = {}) {
@@ -70,15 +71,29 @@ class LogininforService extends Service {
   }
 
   /**
+   * 获取缓存键
+   * @param {string} userName - 用户名
+   * @return {string} 缓存键
+   */
+  getCacheKey(userName) {
+    return CacheConstants.PWD_ERR_CNT_KEY + userName;
+  }
+
+  /**
    * 解锁用户（清除登录失败记录缓存）
+   * 参照 SysPasswordService.clearLoginRecordCache 实现
    * @param {string} userName - 用户名
    */
   async unlockUser(userName) {
     const { app } = this;
+    const cacheKey = this.getCacheKey(userName);
     
-    // 清除登录失败记录缓存
-    const cacheKey = `login_fail:${userName}`;
-    await app.cache.default.del(cacheKey);
+    // 检查缓存是否存在
+    const exists = await app.cache.default.get(cacheKey);
+    if (exists !== null && exists !== undefined) {
+      // 删除缓存
+      await app.cache.default.del(cacheKey);
+    }
   }
 
   /**

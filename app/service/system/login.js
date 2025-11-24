@@ -18,7 +18,7 @@ class LoginService extends Service {
    * @return {object} 用户信息
    */
   async login(userName, password) {
-    const { ctx, app } = this;
+    const { ctx, service } = this;
 
     // 1. 查询用户
     const users =
@@ -42,13 +42,8 @@ class LoginService extends Service {
       throw new Error("用户已被停用，请联系管理员");
     }
 
-    // 3. 验证密码
-    const security = ctx.helper.security;
-    const isMatch = await security.comparePassword(password, user.password);
-
-    if (!isMatch) {
-      throw new Error("用户不存在或密码错误");
-    }
+    // 3. 验证密码（包含错误次数限制）
+    await service.system.password.validate(user, password);
 
     // 4. 更新登录信息
     await ctx.helper.getMasterDB(ctx).sysUserMapper.updateLoginInfo([], {

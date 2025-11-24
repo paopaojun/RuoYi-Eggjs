@@ -140,6 +140,14 @@ module.exports = (appInfo) => {
     category: "text", // 图片类型：svg-SVG格式 text-纯文本
   };
 
+  // 用户配置
+  config.user = {
+    password: {
+      maxRetryCount: 5, // 密码最大错误次数
+      lockTime: 10, // 密码锁定时间（默认10分钟）
+    },
+  };
+
   // 安全配置
   config.security = {
     csrf: {
