@@ -8,12 +8,29 @@
 
 基于 Egg.js 框架开发的企业级后台管理系统，100% 实现若依（RuoYi-Vue）系统功能。采用 MyBatis XML 风格编写 SQL，完全复用若依原有的数据库结构和 MyBatis XML 映射文件，实现从 Java 到 Node.js 的无缝迁移。
 
+## 前端项目
+
+本项目是后端服务，可无缝对接若依官方 Vue3 前端项目：
+
+- **RuoYi-Vue3**: [https://gitcode.com/yangzongzhuan/RuoYi-Vue3](https://gitcode.com/yangzongzhuan/RuoYi-Vue3)
+- 完全兼容若依前端所有功能
+- API 接口与若依 Java 版本保持一致
+- 支持所有前端页面和组件
+
+**配置后端接口**：
+
+在前端项目的 `vite.config.js` 中设置后端接口地址：
+
+```javascript
+const baseUrl = 'http://localhost:7001' // 后端接口
+```
+
 ## ✨ 特性
 
 ### 核心特性
 
 - 🗄️ **MyBatis XML 编写 SQL** - 业务逻辑与 SQL 分离，支持动态 SQL（[文档](https://github.com/undsky/ruoyi-eggjs-mybatis)）
-- 🔌 **多数据库支持** - 支持 MySQL、PostgreSQL、SQLite 等多种数据库，支持多数据源配置（[文档](https://github.com/undsky/ruoyi-eggjs-mybatis?tab=readme-ov-file#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84)）
+- 🔌 **多数据库支持** - 支持 MySQL、PostgreSQL、SQLite 等多种数据库，支持多数据源配置（[MySQL](https://github.com/undsky/ruoyi-eggjs-mysql) | [PostgreSQL](https://github.com/undsky/ruoyi-eggjs-pgsql) | [SQLite](https://github.com/undsky/ruoyi-eggjs-sqlite)）
 - 🤖 **代码自动生成** - 基于 XML Mapper 自动生成 Service 层代码（[文档](https://github.com/undsky/ruoyi-eggjs-cli)）
 - 🌐 **内网穿透** - 内置 FRP 客户端，快速将本地服务暴露到公网（[文档](https://github.com/undsky/ruoyi-eggjs-cli#frp-内网穿透)）
 - 📝 **文件模版** - 使用 VSCode 插件快速生成代码模板（[文档](https://marketplace.visualstudio.com/items?itemName=qiu8310.dot-template-vscode)）
@@ -24,8 +41,6 @@
 - 💡 **IDE 智能提示**  - 完整的 TypeScript 类型定义，支持代码跳转、智能提示和参数提示
 - 🚀 **缓存支持** - 多层级缓存策略（内存、文件、Redis）（[文档](https://github.com/undsky/ruoyi-eggjs-cache)）
 - 🛡️ **限流保护** - API 请求频率限制，防止恶意攻击（[文档](https://github.com/undsky/ruoyi-eggjs-ratelimiter)）
-- 📦 **文件上传** - 支持多种文件类型上传
-- 🎨 **统一响应格式** - 自动格式化 API 响应
 
 ### 技术栈
 
@@ -33,10 +48,6 @@
 | --- | --- | --- |
 | [Node.js](https://nodejs.org) | >=20.0.0 | JavaScript 运行时 |
 | [Egg.js](https://eggjs.org) | ^3 | 企业级 Node.js 框架 |
-| [MySQL2](https://github.com/sidorares/node-mysql2) | ^3 | MySQL 数据库驱动 |
-| [cache-manager](https://github.com/node-cache-manager/node-cache-manager) | ^4 | 缓存管理 |
-| [JWT](https://jwt.io) | ^3 | 身份认证 |
-| [dayjs](https://day.js.org) | ^1 | 日期处理 |
 
 ### 自研插件
 
@@ -44,10 +55,11 @@
 | --- | --- | --- |
 | [ruoyi-eggjs-mybatis](https://github.com/undsky/ruoyi-eggjs-mybatis) | MyBatis XML SQL 映射 | [README](https://github.com/undsky/ruoyi-eggjs-mybatis) |
 | [ruoyi-eggjs-mysql](https://github.com/undsky/ruoyi-eggjs-mysql) | MySQL 数据库操作 | [README](https://github.com/undsky/ruoyi-eggjs-mysql) |
+| [ruoyi-eggjs-pgsql](https://github.com/undsky/ruoyi-eggjs-pgsql) | PostgreSQL 数据库操作 | [README](https://github.com/undsky/ruoyi-eggjs-pgsql) |
+| [ruoyi-eggjs-sqlite](https://github.com/undsky/ruoyi-eggjs-sqlite) | SQLite 数据库操作 | [README](https://github.com/undsky/ruoyi-eggjs-sqlite) |
 | [ruoyi-eggjs-cache](https://github.com/undsky/ruoyi-eggjs-cache) | 多层级缓存 | [README](https://github.com/undsky/ruoyi-eggjs-cache) |
 | [ruoyi-eggjs-ratelimiter](https://github.com/undsky/ruoyi-eggjs-ratelimiter) | API 限流 | [README](https://github.com/undsky/ruoyi-eggjs-ratelimiter) |
 | [ruoyi-eggjs-cli](https://github.com/undsky/ruoyi-eggjs-cli) | 代码生成工具、FRP 内网穿透 | [README](https://github.com/undsky/ruoyi-eggjs-cli) |
-| [ruoyi-eggjs-sqlite](https://github.com/undsky/ruoyi-eggjs-sqlite) | SQLite 数据库操作 | [README](https://github.com/undsky/ruoyi-eggjs-sqlite) |
 | [ruoyi-eggjs-handlebars](https://github.com/undsky/ruoyi-eggjs-handlebars) | Handlebars 模板引擎 | [README](https://github.com/undsky/ruoyi-eggjs-handlebars) |
 
 ## 📦 项目结构
@@ -240,16 +252,6 @@ npm stop
 测试接口：
 - 版本信息：`GET http://localhost:7001/version`
 
-### 前端项目
-
-下载 [https://github.com/yangzongzhuan/RuoYi-Vue3](https://github.com/yangzongzhuan/RuoYi-Vue3)
-
-#### 修改接口地址
-
-``` javascript
-// vite.config.js
-const baseUrl = 'http://localhost:7001' // 后端接口
-```
 
 ## ⚙️ 配置说明
 
