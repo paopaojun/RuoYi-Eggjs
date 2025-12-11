@@ -47,6 +47,25 @@ import ExportDbMysqlRuoyiSysRoleMenuMapper = require('../../../app/service/db/my
 import ExportDbMysqlRuoyiSysUserMapper = require('../../../app/service/db/mysql/ruoyi/SysUserMapper');
 import ExportDbMysqlRuoyiSysUserPostMapper = require('../../../app/service/db/mysql/ruoyi/SysUserPostMapper');
 import ExportDbMysqlRuoyiSysUserRoleMapper = require('../../../app/service/db/mysql/ruoyi/SysUserRoleMapper');
+import ExportDbPgsqlRuoyiGenTableColumnMapper = require('../../../app/service/db/pgsql/ruoyi/GenTableColumnMapper');
+import ExportDbPgsqlRuoyiGenTableMapper = require('../../../app/service/db/pgsql/ruoyi/GenTableMapper');
+import ExportDbPgsqlRuoyiSysConfigMapper = require('../../../app/service/db/pgsql/ruoyi/SysConfigMapper');
+import ExportDbPgsqlRuoyiSysDeptMapper = require('../../../app/service/db/pgsql/ruoyi/SysDeptMapper');
+import ExportDbPgsqlRuoyiSysDictDataMapper = require('../../../app/service/db/pgsql/ruoyi/SysDictDataMapper');
+import ExportDbPgsqlRuoyiSysDictTypeMapper = require('../../../app/service/db/pgsql/ruoyi/SysDictTypeMapper');
+import ExportDbPgsqlRuoyiSysJobLogMapper = require('../../../app/service/db/pgsql/ruoyi/SysJobLogMapper');
+import ExportDbPgsqlRuoyiSysJobMapper = require('../../../app/service/db/pgsql/ruoyi/SysJobMapper');
+import ExportDbPgsqlRuoyiSysLogininforMapper = require('../../../app/service/db/pgsql/ruoyi/SysLogininforMapper');
+import ExportDbPgsqlRuoyiSysMenuMapper = require('../../../app/service/db/pgsql/ruoyi/SysMenuMapper');
+import ExportDbPgsqlRuoyiSysNoticeMapper = require('../../../app/service/db/pgsql/ruoyi/SysNoticeMapper');
+import ExportDbPgsqlRuoyiSysOperLogMapper = require('../../../app/service/db/pgsql/ruoyi/SysOperLogMapper');
+import ExportDbPgsqlRuoyiSysPostMapper = require('../../../app/service/db/pgsql/ruoyi/SysPostMapper');
+import ExportDbPgsqlRuoyiSysRoleDeptMapper = require('../../../app/service/db/pgsql/ruoyi/SysRoleDeptMapper');
+import ExportDbPgsqlRuoyiSysRoleMapper = require('../../../app/service/db/pgsql/ruoyi/SysRoleMapper');
+import ExportDbPgsqlRuoyiSysRoleMenuMapper = require('../../../app/service/db/pgsql/ruoyi/SysRoleMenuMapper');
+import ExportDbPgsqlRuoyiSysUserMapper = require('../../../app/service/db/pgsql/ruoyi/SysUserMapper');
+import ExportDbPgsqlRuoyiSysUserPostMapper = require('../../../app/service/db/pgsql/ruoyi/SysUserPostMapper');
+import ExportDbPgsqlRuoyiSysUserRoleMapper = require('../../../app/service/db/pgsql/ruoyi/SysUserRoleMapper');
 import ExportDbSqliteRuoyiGenTableColumnMapper = require('../../../app/service/db/sqlite/ruoyi/GenTableColumnMapper');
 import ExportDbSqliteRuoyiGenTableMapper = require('../../../app/service/db/sqlite/ruoyi/GenTableMapper');
 import ExportDbSqliteRuoyiSysConfigMapper = require('../../../app/service/db/sqlite/ruoyi/SysConfigMapper');
@@ -118,6 +137,29 @@ declare module 'egg' {
           sysUserMapper: AutoInstanceType<typeof ExportDbMysqlRuoyiSysUserMapper>;
           sysUserPostMapper: AutoInstanceType<typeof ExportDbMysqlRuoyiSysUserPostMapper>;
           sysUserRoleMapper: AutoInstanceType<typeof ExportDbMysqlRuoyiSysUserRoleMapper>;
+        }
+      }
+      pgsql: {
+        ruoyi: {
+          genTableColumnMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiGenTableColumnMapper>;
+          genTableMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiGenTableMapper>;
+          sysConfigMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysConfigMapper>;
+          sysDeptMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysDeptMapper>;
+          sysDictDataMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysDictDataMapper>;
+          sysDictTypeMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysDictTypeMapper>;
+          sysJobLogMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysJobLogMapper>;
+          sysJobMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysJobMapper>;
+          sysLogininforMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysLogininforMapper>;
+          sysMenuMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysMenuMapper>;
+          sysNoticeMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysNoticeMapper>;
+          sysOperLogMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysOperLogMapper>;
+          sysPostMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysPostMapper>;
+          sysRoleDeptMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysRoleDeptMapper>;
+          sysRoleMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysRoleMapper>;
+          sysRoleMenuMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysRoleMenuMapper>;
+          sysUserMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysUserMapper>;
+          sysUserPostMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysUserPostMapper>;
+          sysUserRoleMapper: AutoInstanceType<typeof ExportDbPgsqlRuoyiSysUserRoleMapper>;
         }
       }
       sqlite: {
