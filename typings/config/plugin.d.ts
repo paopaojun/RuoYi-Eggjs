@@ -22,6 +22,7 @@ import 'egg-jwt';
 import 'ruoyi-eggjs-mybatis';
 import 'ruoyi-eggjs-mysql';
 import 'ruoyi-eggjs-sqlite';
+import 'ruoyi-eggjs-pgsql';
 import 'ruoyi-eggjs-ratelimiter';
 import '@hackycy/egg-bull';
 import { EggPluginItem } from 'egg';
@@ -46,6 +47,7 @@ declare module 'egg' {
     mybatis?: EggPluginItem;
     mysql?: EggPluginItem;
     sqlite?: EggPluginItem;
+    pgsql?: EggPluginItem;
     ratelimiter?: EggPluginItem;
     bull?: EggPluginItem;
   }

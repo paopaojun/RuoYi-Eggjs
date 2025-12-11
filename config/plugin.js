@@ -36,6 +36,10 @@ module.exports = {
     enable: true,
     package: "ruoyi-eggjs-sqlite",
   },
+  pgsql: {
+    enable: true,
+    package: "ruoyi-eggjs-pgsql",
+  },
   ratelimiter: {
     enable: true,
     package: "ruoyi-eggjs-ratelimiter",

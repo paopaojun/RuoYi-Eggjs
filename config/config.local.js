@@ -42,6 +42,17 @@ module.exports = (appInfo) => {
 
   config.ratelimiter = { redis };
 
+  // sqlite 配置
+  config.sqlite = {
+    clients: {
+      ruoyi: {
+        path: "./cache/ruoyi.db",
+      },
+    },
+    // 启用驼峰命名转换
+    camelCase: true,
+  };
+
   // egg-bull 配置
   config.bull = {
     client: redis,
