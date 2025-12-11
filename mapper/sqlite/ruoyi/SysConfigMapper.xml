@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mapper/mysql/ruoyi/SysConfigMapper.xml">
+<mapper namespace="mapper/sqlite/ruoyi/SysConfigMapper.xml">
     
     <resultMap type="SysConfig" id="SysConfigResult">
     	<id     property="configId"      column="config_id"      />

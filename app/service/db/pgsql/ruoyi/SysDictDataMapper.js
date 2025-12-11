@@ -2,7 +2,7 @@ const Service = require('egg').Service;
 
 class SysDictDataMapperService extends Service {
     mapper(sqlid, values, params) {
-        return this.app.mapper('mapper/mysql/ruoyi/SysDictDataMapper.xml', sqlid, values, params)
+        return this.app.mapper('mapper/pgsql/ruoyi/SysDictDataMapper.xml', sqlid, values, params)
     }
 
     db() {

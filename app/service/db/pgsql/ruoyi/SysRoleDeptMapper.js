@@ -2,7 +2,7 @@ const Service = require('egg').Service;
 
 class SysRoleDeptMapperService extends Service {
     mapper(sqlid, values, params) {
-        return this.app.mapper('mapper/mysql/ruoyi/SysRoleDeptMapper.xml', sqlid, values, params)
+        return this.app.mapper('mapper/pgsql/ruoyi/SysRoleDeptMapper.xml', sqlid, values, params)
     }
 
     db() {

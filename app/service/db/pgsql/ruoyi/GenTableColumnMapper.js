@@ -2,7 +2,7 @@ const Service = require('egg').Service;
 
 class GenTableColumnMapperService extends Service {
     mapper(sqlid, values, params) {
-        return this.app.mapper('mapper/mysql/ruoyi/GenTableColumnMapper.xml', sqlid, values, params)
+        return this.app.mapper('mapper/pgsql/ruoyi/GenTableColumnMapper.xml', sqlid, values, params)
     }
 
     db() {

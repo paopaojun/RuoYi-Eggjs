@@ -2,7 +2,7 @@ const Service = require('egg').Service;
 
 class SysJobMapperService extends Service {
     mapper(sqlid, values, params) {
-        return this.app.mapper('mapper/mysql/ruoyi/SysJobMapper.xml', sqlid, values, params)
+        return this.app.mapper('mapper/sqlite/ruoyi/SysJobMapper.xml', sqlid, values, params)
     }
 
     db() {

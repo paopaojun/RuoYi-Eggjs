@@ -2,7 +2,7 @@ const Service = require('egg').Service;
 
 class SysUserPostMapperService extends Service {
     mapper(sqlid, values, params) {
-        return this.app.mapper('mapper/mysql/ruoyi/SysUserPostMapper.xml', sqlid, values, params)
+        return this.app.mapper('mapper/pgsql/ruoyi/SysUserPostMapper.xml', sqlid, values, params)
     }
 
     db() {

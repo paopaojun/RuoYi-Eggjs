@@ -2,7 +2,7 @@ const Service = require('egg').Service;
 
 class SysLogininforMapperService extends Service {
     mapper(sqlid, values, params) {
-        return this.app.mapper('mapper/mysql/ruoyi/SysLogininforMapper.xml', sqlid, values, params)
+        return this.app.mapper('mapper/pgsql/ruoyi/SysLogininforMapper.xml', sqlid, values, params)
     }
 
     db() {

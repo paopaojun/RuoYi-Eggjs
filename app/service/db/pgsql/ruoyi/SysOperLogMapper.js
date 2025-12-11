@@ -2,7 +2,7 @@ const Service = require('egg').Service;
 
 class SysOperLogMapperService extends Service {
     mapper(sqlid, values, params) {
-        return this.app.mapper('mapper/mysql/ruoyi/SysOperLogMapper.xml', sqlid, values, params)
+        return this.app.mapper('mapper/pgsql/ruoyi/SysOperLogMapper.xml', sqlid, values, params)
     }
 
     db() {

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="mapper/mysql/ruoyi/SysLogininforMapper.xml">
+<mapper namespace="mapper/sqlite/ruoyi/SysLogininforMapper.xml">
 
 	<resultMap type="SysLogininfor" id="SysLogininforResult">
 		<id     property="infoId"        column="info_id"           />

@@ -2,7 +2,7 @@ const Service = require('egg').Service;
 
 class SysNoticeMapperService extends Service {
     mapper(sqlid, values, params) {
-        return this.app.mapper('mapper/mysql/ruoyi/SysNoticeMapper.xml', sqlid, values, params)
+        return this.app.mapper('mapper/pgsql/ruoyi/SysNoticeMapper.xml', sqlid, values, params)
     }
 
     db() {
